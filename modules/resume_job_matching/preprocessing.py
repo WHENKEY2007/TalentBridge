@@ -32,7 +32,10 @@ def parse_document(file_data: Union[BinaryIO, bytes], filename: str) -> str:
 
     try:
         if ext == "pdf":
-            import fitz  # PyMuPDF
+            try:
+                import pymupdf as fitz
+            except ImportError:
+                import fitz
             doc = fitz.open(stream=raw_bytes, filetype="pdf")
             text_pages = [page.get_text() for page in doc]
             return "\n".join(text_pages).strip()
