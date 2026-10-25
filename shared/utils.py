@@ -1,7 +1,6 @@
 """
 TalentBridge AI - Shared Design System & UI Utilities
-Provides modern typography injection, sleek cards, metric widgets, and resilient loaders.
-Ensures platform-wide visual elegance without coupling modules or breaking contracts.
+Full-width portal layout with flashcard navigation and zero sidebar clutter.
 """
 
 import importlib
@@ -12,10 +11,10 @@ from typing import Callable, Optional, Sequence
 def inject_custom_css() -> None:
     """
     Injects global enterprise design system styles:
+    - Completely eliminates the left sidebar for full-width portal layout
     - Plus Jakarta Sans typography from Google Fonts
-    - Polished card elevation, soft drop-shadows, and smooth micro-animations
-    - High-contrast, modern metric displays
-    - Sleek tabs and button gradients
+    - Interactive flashcard elevation, hover effects, and modern card styling
+    - Sleek tabs, metric displays, and gradient buttons
     """
     import streamlit as st
 
@@ -27,26 +26,58 @@ def inject_custom_css() -> None:
         /* Global Typography & Font Smoothing */
         html, body, [class*="css"], [class*="st-"] {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-            letter-spacing: -0.01em;
+            letter-spacing: -0.015em;
         }
 
-        /* Smooth page background */
+        /* Completely hide left sidebar and sidebar toggle control */
+        section[data-testid="stSidebar"],
+        [data-testid="stSidebarNav"],
+        [data-testid="collapsedControl"] {
+            display: none !important;
+            width: 0px !important;
+            height: 0px !important;
+            visibility: hidden !important;
+        }
+
+        /* Full width modern page background */
         .stApp {
             background-color: #f8fafc;
         }
 
-        /* Top header padding normalization */
+        /* Clean Container Spacing */
         .block-container {
-            padding-top: 2rem !important;
-            padding-bottom: 3.5rem !important;
-            max-width: 1280px !important;
+            padding-top: 1.5rem !important;
+            padding-bottom: 4rem !important;
+            max-width: 1360px !important;
+        }
+
+        /* Flashcard Hover & Elevation */
+        .flashcard-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1.5rem;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flashcard-box:hover {
+            transform: translateY(-4px);
+            border-color: #cbd5e1;
+            box-shadow: 0 16px 32px -4px rgba(99, 102, 241, 0.12);
         }
 
         /* Primary Button Styling */
         div.stButton > button[kind="primary"] {
             background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;
             color: #ffffff !important;
-            font-weight: 600 !important;
+            font-weight: 700 !important;
             border: none !important;
             border-radius: 10px !important;
             padding: 0.65rem 1.4rem !important;
@@ -62,27 +93,28 @@ def inject_custom_css() -> None:
         /* Secondary Button Styling */
         div.stButton > button:not([kind="primary"]) {
             background-color: #ffffff !important;
-            color: #334155 !important;
+            color: #1e293b !important;
             border: 1px solid #e2e8f0 !important;
             border-radius: 10px !important;
             font-weight: 600 !important;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
             transition: all 0.2s ease !important;
         }
 
         div.stButton > button:not([kind="primary"]):hover {
-            border-color: #cbd5e1 !important;
-            background-color: #f8fafc !important;
-            color: #0f172a !important;
+            border-color: #6366f1 !important;
+            color: #4f46e5 !important;
+            background-color: #f5f3ff !important;
+            transform: translateY(-1px) !important;
         }
 
         /* Metric Cards Styling */
         div[data-testid="stMetric"] {
             background: #ffffff !important;
             border: 1px solid #e2e8f0 !important;
-            border-radius: 12px !important;
-            padding: 1.1rem 1.25rem !important;
-            box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.05) !important;
+            border-radius: 14px !important;
+            padding: 1.15rem 1.35rem !important;
+            box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04) !important;
             transition: all 0.2s ease !important;
         }
 
@@ -92,8 +124,8 @@ def inject_custom_css() -> None:
         }
 
         div[data-testid="stMetricLabel"] p {
-            font-size: 0.82rem !important;
-            font-weight: 600 !important;
+            font-size: 0.8rem !important;
+            font-weight: 700 !important;
             color: #64748b !important;
             text-transform: uppercase !important;
             letter-spacing: 0.05em !important;
@@ -110,14 +142,14 @@ def inject_custom_css() -> None:
         .stTabs [data-baseweb="tab-list"] {
             gap: 8px !important;
             background-color: #f1f5f9 !important;
-            padding: 5px !important;
+            padding: 6px !important;
             border-radius: 12px !important;
             border-bottom: none !important;
         }
 
         .stTabs [data-baseweb="tab"] {
             height: auto !important;
-            padding: 8px 16px !important;
+            padding: 8px 18px !important;
             border-radius: 8px !important;
             font-weight: 600 !important;
             font-size: 0.88rem !important;
@@ -133,44 +165,10 @@ def inject_custom_css() -> None:
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
         }
 
-        /* Text Areas & Inputs */
-        div[data-baseweb="textarea"] {
-            border-radius: 10px !important;
-            border-color: #e2e8f0 !important;
-            background-color: #ffffff !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
-        }
-
-        div[data-baseweb="textarea"]:focus-within {
-            border-color: #6366f1 !important;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
-        }
-
         /* Progress Bar */
         .stProgress > div > div > div > div {
             background: linear-gradient(90deg, #6366f1 0%, #10b981 100%) !important;
             border-radius: 9999px !important;
-        }
-
-        /* Sidebar Styling */
-        section[data-testid="stSidebar"] {
-            background-color: #ffffff !important;
-            border-right: 1px solid #e2e8f0 !important;
-        }
-
-        /* Custom Card Class */
-        .tb-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.04);
-            transition: all 0.25s ease;
-        }
-
-        .tb-card:hover {
-            box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.08);
-            border-color: #cbd5e1;
         }
         </style>
         """,
@@ -195,13 +193,13 @@ def render_module_header(
     st.markdown(
         f"""
         <div style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-                    padding: 1.75rem 2rem; border-radius: 16px; margin-bottom: 1.75rem;
+                    padding: 1.75rem 2rem; border-radius: 16px; margin-bottom: 1.5rem;
                     border: 1px solid rgba(255, 255, 255, 0.1);
                     box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.25);">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4);
-                                width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center;
+                    <div style="background: rgba(99, 102, 241, 0.25); border: 1px solid rgba(99, 102, 241, 0.4);
+                                width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center;
                                 justify-content: center; font-size: 1.35rem;">
                         ⚡
                     </div>
@@ -217,7 +215,7 @@ def render_module_header(
                     ● {badge}
                 </span>
             </div>
-            <p style="color: #94a3b8; margin: 0.75rem 0 0.5rem 0; font-size: 0.95rem; line-height: 1.5; max-width: 850px;">
+            <p style="color: #94a3b8; margin: 0.75rem 0 0.5rem 0; font-size: 0.95rem; line-height: 1.5; max-width: 900px;">
                 {description}
             </p>
             <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.75rem; font-size: 0.85rem;">
@@ -254,7 +252,7 @@ def render_disclaimer(
     st.markdown(
         f"""
         <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b;
-                    padding: 1rem 1.25rem; border-radius: 10px; margin: 2rem 0 1rem 0;
+                    padding: 1rem 1.25rem; border-radius: 12px; margin: 2rem 0 1rem 0;
                     color: #92400e; font-size: 0.88rem; line-height: 1.5; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
             <div style="display: flex; gap: 0.65rem; align-items: flex-start;">
                 <span style="font-size: 1.15rem; line-height: 1;">🛡️</span>
@@ -290,7 +288,7 @@ def render_placeholder(
 
     st.markdown(
         f"""
-        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem 1.5rem;
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.25rem 1.5rem;
                     margin-bottom: 1.5rem; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
             <div style="display: flex; align-items: center; gap: 0.65rem; color: #4f46e5; font-weight: 700;">
                 <span style="font-size: 1.2rem;">🚧</span>
@@ -309,7 +307,7 @@ def render_placeholder(
     with col1:
         st.markdown(
             """
-            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; height: 100%;">
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.25rem; height: 100%;">
                 <h4 style="margin-top: 0; color: #0f172a; font-size: 1rem; font-weight: 700;">📥 Expected Inputs</h4>
             """,
             unsafe_allow_html=True,
