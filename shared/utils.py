@@ -83,45 +83,6 @@ def inject_custom_css() -> None:
             visibility: hidden !important;
         }
 
-        /* Suppress third-party browser extension overlays (Career Copilot, Job Trackers, etc.) */
-        [id*="career-copilot"],
-        [class*="career-copilot"],
-        [id*="copilot"],
-        [class*="copilot"],
-        [id*="job-tracker"],
-        [class*="job-tracker"],
-        [id*="JobtoTracker"],
-        [class*="JobtoTracker"],
-        [id*="JobTracker"],
-        [class*="JobTracker"],
-        [id*="CoverLetter"],
-        [class*="CoverLetter"],
-        [id*="ResumeTailor"],
-        [class*="ResumeTailor"],
-        [id*="SuperSearch"],
-        [class*="SuperSearch"],
-        [id*="SeeWhoIsHiring"],
-        [class*="SeeWhoIsHiring"],
-        div[id^="copilot-"],
-        div[class^="copilot-"],
-        div[id^="cc-"],
-        div[class^="cc-"],
-        div[style*="z-index: 2147483647"],
-        div[style*="z-index: 9999999"],
-        div[style*="z-index: 999999"],
-        div[style*="z-index: 99999"],
-        div[style*="position: fixed"][style*="left: 0"]:not([data-testid]),
-        div[style*="position: fixed"][style*="left: 10px"]:not([data-testid]),
-        div[style*="position: fixed"][style*="left: 0px"]:not([data-testid]) {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
-            width: 0px !important;
-            height: 0px !important;
-            overflow: hidden !important;
-        }
-
         /* Full width modern page background */
         .stApp {
             background-color: #f8fafc;
@@ -257,57 +218,6 @@ def inject_custom_css() -> None:
         """,
         unsafe_allow_html=True,
     )
-
-    # Active DOM sanitation: purge third-party browser extension overlays that leak into viewport
-    try:
-        import streamlit.components.v1 as components
-        components.html(
-            """
-            <script>
-            (function() {
-                function purgeExtensionOverlays() {
-                    try {
-                        const targetDoc = window.parent ? window.parent.document : document;
-                        if (!targetDoc) return;
-
-                        const keywords = [
-                            'SaveJobtoTracker', 'ViewJobTracker', 'AICoverLetterGenerator',
-                            'SummarizeJobDescription', 'AIResumeTailor', 'LinkedInOptimization',
-                            'SuperSearch', 'SeeWhoIsHiring'
-                        ];
-
-                        const all = targetDoc.querySelectorAll('div, span, button, a, p, li, ul');
-                        for (let el of all) {
-                            if (!el.getAttribute('data-testid') && el.textContent) {
-                                for (let kw of keywords) {
-                                    if (el.textContent.includes(kw)) {
-                                        // Walk up to find container
-                                        let root = el;
-                                        while (root.parentElement && root.parentElement !== targetDoc.body && !root.parentElement.getAttribute('data-testid')) {
-                                            root = root.parentElement;
-                                        }
-                                        if (root && !root.getAttribute('data-testid')) {
-                                            root.style.setProperty('display', 'none', 'important');
-                                            root.style.setProperty('visibility', 'hidden', 'important');
-                                            root.remove();
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    } catch (e) {}
-                }
-                purgeExtensionOverlays();
-                setInterval(purgeExtensionOverlays, 300);
-            })();
-            </script>
-            """,
-            height=0,
-            width=0,
-        )
-    except Exception:
-        pass
 
 
 def render_module_header(
