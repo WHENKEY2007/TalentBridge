@@ -48,7 +48,15 @@ class ResumeAnalyzer:
         self._load_if_exists()
 
     def _load_if_exists(self) -> None:
-        """Loads serialized model bundle if available."""
+        """Loads serialized model bundle if available, or auto-trains if missing."""
+        if not self.model_path.exists():
+            try:
+                from .train import train_resume_analyzer_model
+
+                train_resume_analyzer_model()
+            except Exception:
+                pass
+
         if self.model_path.exists():
             try:
                 self.bundle = joblib.load(self.model_path)
