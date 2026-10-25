@@ -84,21 +84,28 @@ def inject_custom_css() -> None:
         }
 
         /* Suppress Careerflow extension host elements */
-        careerflow-root,
-        careerflow-sidebar,
-        careerflow-container,
-        careerflow-app,
-        careerflow-widget,
+        #crx-root-main,
+        #crx-root,
+        #careerflow-icon,
+        [id*="crx-root"],
+        [class*="crx-root"],
         [id*="careerflow"],
         [class*="careerflow"],
-        [id*="career-flow"],
-        [class*="career-flow"] {
+        careerflow-root,
+        careerflow-sidebar {
             display: none !important;
             visibility: hidden !important;
             width: 0px !important;
             height: 0px !important;
+            max-width: 0px !important;
+            max-height: 0px !important;
             opacity: 0 !important;
             pointer-events: none !important;
+            position: fixed !important;
+            top: -99999px !important;
+            left: -99999px !important;
+            z-index: -99999 !important;
+            transform: scale(0) !important;
         }
 
         /* Full width modern page background */
@@ -236,6 +243,44 @@ def inject_custom_css() -> None:
         """,
         unsafe_allow_html=True,
     )
+
+    # Safe targeted DOM cleaner: exclusively targets Careerflow extension root elements
+    try:
+        import streamlit.components.v1 as components
+        components.html(
+            """
+            <script>
+            (function() {
+                function purgeCareerflow() {
+                    try {
+                        const targetDoc = window.parent ? window.parent.document : document;
+                        if (!targetDoc) return;
+
+                        const elMain = targetDoc.getElementById('crx-root-main');
+                        if (elMain) elMain.remove();
+
+                        const elRoot = targetDoc.getElementById('crx-root');
+                        if (elRoot) elRoot.remove();
+
+                        const elIcon = targetDoc.getElementById('careerflow-icon');
+                        if (elIcon) elIcon.remove();
+
+                        const crxMatches = targetDoc.querySelectorAll('[id*="crx-root"]');
+                        for (let el of crxMatches) {
+                            el.remove();
+                        }
+                    } catch (e) {}
+                }
+                purgeCareerflow();
+                setInterval(purgeCareerflow, 200);
+            })();
+            </script>
+            """,
+            height=0,
+            width=0,
+        )
+    except Exception:
+        pass
 
 
 def render_module_header(
