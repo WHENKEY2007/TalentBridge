@@ -76,9 +76,8 @@ def render() -> None:
         with text_tab:
             resume_text_input = st.text_area(
                 "Resume Content (Markdown / Plain Text)",
-                value=st.session_state.get("ra_text_input", st.session_state["ra_resume_text"]),
+                value=st.session_state["ra_resume_text"],
                 height=340,
-                key="ra_text_input",
                 placeholder="Paste the full text of candidate resume here...",
             )
             st.session_state["ra_resume_text"] = resume_text_input

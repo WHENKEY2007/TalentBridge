@@ -246,39 +246,39 @@ def inject_custom_css() -> None:
 
     # Safe targeted DOM cleaner: exclusively targets Careerflow extension root elements
     try:
-        import streamlit.components.v1 as components
-        components.html(
-            """
-            <script>
-            (function() {
-                function purgeCareerflow() {
-                    try {
-                        const targetDoc = window.parent ? window.parent.document : document;
-                        if (!targetDoc) return;
+        script_code = """
+        <script>
+        (function() {
+            function purgeCareerflow() {
+                try {
+                    const targetDoc = window.parent ? window.parent.document : document;
+                    if (!targetDoc) return;
 
-                        const elMain = targetDoc.getElementById('crx-root-main');
-                        if (elMain) elMain.remove();
+                    const elMain = targetDoc.getElementById('crx-root-main');
+                    if (elMain) elMain.remove();
 
-                        const elRoot = targetDoc.getElementById('crx-root');
-                        if (elRoot) elRoot.remove();
+                    const elRoot = targetDoc.getElementById('crx-root');
+                    if (elRoot) elRoot.remove();
 
-                        const elIcon = targetDoc.getElementById('careerflow-icon');
-                        if (elIcon) elIcon.remove();
+                    const elIcon = targetDoc.getElementById('careerflow-icon');
+                    if (elIcon) elIcon.remove();
 
-                        const crxMatches = targetDoc.querySelectorAll('[id*="crx-root"]');
-                        for (let el of crxMatches) {
-                            el.remove();
-                        }
-                    } catch (e) {}
-                }
-                purgeCareerflow();
-                setInterval(purgeCareerflow, 200);
-            })();
-            </script>
-            """,
-            height=0,
-            width=0,
-        )
+                    const crxMatches = targetDoc.querySelectorAll('[id*="crx-root"]');
+                    for (let el of crxMatches) {
+                        el.remove();
+                    }
+                } catch (e) {}
+            }
+            purgeCareerflow();
+            setInterval(purgeCareerflow, 200);
+        })();
+        </script>
+        """
+        if hasattr(st, "html"):
+            st.html(script_code)
+        else:
+            import streamlit.components.v1 as components
+            components.html(script_code, height=0, width=0)
     except Exception:
         pass
 
