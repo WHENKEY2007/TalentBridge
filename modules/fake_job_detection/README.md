@@ -2,71 +2,185 @@
 
 **Assigned Lead:** Member 2  
 **Module Identifier:** `modules.fake_job_detection`  
-**Status:** 🚧 In Development (Scaffold Ready)  
-
----
+**Status:** Implemented — Initial ML Screening Version
 
 ## 1. Module Overview
-Classifies online job postings as legitimate or fraudulent using NLP classification.
 
-This module operates independently within the TalentBridge AI platform. As **Member 2**, you own this directory and can develop, experiment, train models, and create tests without altering other members' code.
+The Fake Job Posting Detection module uses Natural Language Processing (NLP) and machine learning to screen job postings and help job seekers discover potentially legitimate listings.
 
----
+Instead of requiring users to enter individual job details for prediction, the module automatically evaluates postings from a historical dataset and displays only those classified as legitimate by the model.
 
-## 2. Interface Contract
-TalentBridge AI dynamically loads this module via the `render()` function in `interface.py`:
+**Important:** The listings are historical demonstration data, not confirmed current vacancies. Model predictions are estimates and do not guarantee that a job is genuine.
+
+## 2. Features Implemented
+
+- Automatic screening of historical job postings.
+- TF-IDF text feature extraction.
+- Logistic Regression classification.
+- Fraud probability estimation.
+- Filtering of postings predicted as fraudulent.
+- Searchable job listings.
+- Expandable listing details, including descriptions, requirements, benefits, and company information.
+- Saved model pipeline for reuse.
+- Automated unit tests for model initialization and screening behaviour.
+
+## 3. Interface Contract
+
+TalentBridge AI loads this module through the `render()` function in `interface.py`.
 
 ```python
 def render() -> None:
-    # Build your Streamlit UI components here
-    # Call your trained model from model.py
+    # Display searchable, ML-screened job listings
     pass
 ```
 
----
+The module preserves the existing `render()` contract and exports `FakeJobDetector` through `__init__.py`.
 
-## 3. Specifications & Architecture
+## 4. Machine Learning Architecture
 
-### Expected Inputs
-- Job Title & Company Profile
-- Job Description & Requirements text
-- Telecommuting & Employment Type flags
-- Company Logo presence & screening questions
+### Algorithm
 
-### Expected Outputs
-- Fraud Probability Score (0.0 to 1.0)
-- Classification Label: 'Legitimate' vs 'Fraudulent'
-- Risk Indicator flags (e.g., suspicious contact domain, vague requirements)
+The initial implementation uses a Scikit-learn Pipeline containing:
 
-### Recommended ML Approaches
-- `Logistic Regression with TF-IDF`
-- `Random Forest Classifier`
-- `XGBoost`
-- `RoBERTa / DistilBERT`
+1. **TF-IDF Vectorizer:** Converts job-posting text into numerical features.
+2. **Logistic Regression:** Estimates whether a posting is legitimate or fraudulent.
 
----
+The text fields used are:
 
-## 4. Directory Structure
+- Job title
+- Company profile
+- Job description
+- Requirements
+- Benefits
+
+The model uses a stratified 80/20 train-test split with a fixed random seed and class weighting to account for the imbalance between legitimate and fraudulent examples.
+
+### Dataset
+
+The model was trained using the `fake_job_postings.csv` dataset.
+
+- Total records: 17,880
+- Legitimate postings (`fraudulent = 0`): 17,014
+- Fraudulent postings (`fraudulent = 1`): 866
+
+### Initial Evaluation
+
+On the held-out test split:
+
+| Metric | Result |
+|---|---:|
+| Accuracy | 98.69% |
+| Legitimate precision | 99.53% |
+| Legitimate recall | 99.09% |
+| Fraudulent precision | 83.51% |
+| Fraudulent recall | 90.75% |
+
+These results describe performance on the dataset's held-out split. They do not guarantee equivalent performance on new or real-world job postings.
+
+## 5. Screening Logic
+
+The `FakeJobDetector` class provides the following methods:
+
+- `train(data=None)`: Trains and evaluates the model, then saves the pipeline.
+- `load()`: Loads a previously saved model.
+- `predict(features)`: Predicts the fraud probability for one posting.
+- `screen_jobs(jobs)`: Returns only postings with a predicted fraud probability below `0.5`.
+
+The screening threshold is currently fixed at `0.5`. Postings with a fraud probability of `0.5` or higher are excluded from the displayed results.
+
+The Streamlit interface loads the trained model, screens the historical dataset, and provides a search box and expandable listing details.
+
+## 6. Setup and Execution
+
+Run these commands from the TalentBridge repository root.
+
+### Step 1: Install dependencies
+
+Activate your existing virtual environment, if applicable, and install the repository dependencies:
+
+```bash
+python -m pip install -r requirements.txt
 ```
+
+### Step 2: Add the dataset
+
+Place `fake_job_postings.csv` at:
+
+```text
+modules/fake_job_detection/data/fake_job_postings.csv
+```
+
+The dataset and generated model artifact are excluded from Git by the repository's ignore rules. Obtain the dataset through the project's approved data-sharing process before running the module on another machine.
+
+### Step 3: Train the model
+
+If no saved model exists, train it from the repository root:
+
+```bash
+python -c "from modules.fake_job_detection.model import FakeJobDetector; print(FakeJobDetector().train())"
+```
+
+The trained pipeline is saved at:
+
+```text
+modules/fake_job_detection/artifacts/fake_job_model.joblib
+```
+
+### Step 4: Run TalentBridge AI
+
+```bash
+python -m streamlit run app.py
+```
+
+Open the local URL shown in the terminal and navigate to the Fake Job Detection module.
+
+## 7. Automated Tests
+
+Run the module's tests from the repository root:
+
+```bash
+python -m pytest modules/fake_job_detection/tests/ -v
+```
+
+The current test suite checks:
+
+- Detector initialization.
+- Prediction before training or loading.
+- Screening before training or loading.
+- Filtering of postings whose predicted fraud probability is `0.5` or higher.
+
+The current test suite has **4 passing tests**.
+
+## 8. Directory Structure
+
+```text
 modules/fake_job_detection/
-├── __init__.py          # Exports render() and FakeJobDetector
-├── interface.py         # Streamlit UI contract
-├── model.py             # Machine learning model class & pipeline
-├── README.md            # This documentation
+├── __init__.py
+├── interface.py
+├── interface.py.bak
+├── model.py
+├── model.py.bak
+├── README.md
 ├── data/
-│   └── .gitkeep         # Training data (ignored by git if large)
+│   ├── .gitkeep
+│   └── fake_job_postings.csv
 ├── artifacts/
-│   └── .gitkeep         # Serialized models (.pkl, .joblib, etc.)
+│   └── .gitkeep
 └── tests/
-    └── .gitkeep         # Unit tests (e.g., test_fake_job_detection.py)
+    ├── .gitkeep
+    └── test_fake_job_detection.py
 ```
 
----
+The `.bak` files are temporary local backups and should be removed before committing. The CSV dataset and generated model artifact are excluded from Git.
 
-## 5. Next Steps for Member 2
-1. **Branch Out:** Create your git feature branch: `git checkout -b feature/member-2-fake_job_detection`.
-2. **Collect Data:** Add your training data into `modules/fake_job_detection/data/`.
-3. **Build Pipeline:** Implement data preprocessing and ML training in `model.py` (or add a `train.py`).
-4. **Save Artifacts:** Save your model weights into `artifacts/`.
-5. **Connect UI:** Replace the scaffold in `interface.py` with custom Streamlit controls.
-6. **Add Unit Tests:** Write test cases in `modules/fake_job_detection/tests/test_fake_job_detection.py`.
+## 9. Future Improvements
+
+- Evaluate performance on an independent dataset.
+- Tune the screening threshold based on validation results and the cost of false positives and false negatives.
+- Explore additional structured features, such as employment type and company-logo presence.
+- Add stronger safeguards against misleading or suspicious job postings.
+- Improve dataset versioning and model reproducibility.
+
+## 10. Development Ownership
+
+This module is maintained by Member 2. Changes should remain within `modules/fake_job_detection/` unless the team agrees otherwise. Do not modify the shared application entry point, shared utilities, or other members' modules as part of this work.
