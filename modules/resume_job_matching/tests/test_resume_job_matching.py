@@ -1,6 +1,7 @@
 """
 Unit tests for the upgraded Resume–Job Matching module.
-Tests document parsing, skills taxonomy extraction, ATS diagnostics, and hybrid scoring.
+Tests document parsing, skills taxonomy extraction with alias resolution,
+experience extraction, seniority fit, ATS diagnostics, what-if simulations, and report generation.
 """
 
 import io
@@ -11,6 +12,8 @@ from modules.resume_job_matching.model import ResumeJobMatcher
 from modules.resume_job_matching.preprocessing import (
     audit_resume_structure,
     clean_text,
+    evaluate_seniority_fit,
+    extract_experience_years,
     extract_keywords,
     extract_taxonomy_skills,
     find_skill_gap,
@@ -61,6 +64,42 @@ def test_extract_taxonomy_skills():
     assert "docker" in categorized["Cloud & DevOps"]
     assert "kubernetes" in categorized["Cloud & DevOps"]
     assert "postgresql" in categorized["Databases & Storage"]
+
+
+def test_extract_taxonomy_skills_aliases():
+    """Verify abbreviation and alias resolution (e.g. k8s -> kubernetes, postgres -> postgresql)."""
+    text = "Engineered microservices using Golang, K8s, Postgres, and AWS (Amazon Web Services)."
+    categorized = extract_taxonomy_skills(text)
+
+    # golang -> go
+    assert "go" in categorized["Programming Languages"]
+    # k8s -> kubernetes
+    assert "kubernetes" in categorized["Cloud & DevOps"]
+    # postgres -> postgresql
+    assert "postgresql" in categorized["Databases & Storage"]
+    # aws
+    assert "aws" in categorized["Cloud & DevOps"]
+
+
+def test_extract_experience_years():
+    resume_text = "Senior Python Developer with 5+ years of experience in distributed systems."
+    years = extract_experience_years(resume_text, is_job_description=False)
+    assert years == 5.0
+
+    job_text = "Looking for an engineer with 3-5 years experience."
+    req_years = extract_experience_years(job_text, is_job_description=True)
+    assert req_years == 3.0
+
+
+def test_evaluate_seniority_fit():
+    resume = "Lead Architect with 8+ years experience building scalable systems."
+    job = "Seeking Senior Engineer with 5+ years experience in Python."
+    fit = evaluate_seniority_fit(resume, job)
+
+    assert fit["candidate_years"] == 8.0
+    assert fit["required_years"] == 5.0
+    assert fit["fit_score"] >= 0.90
+    assert fit["badge"] in ["Well Matched", "Seniority Premium"]
 
 
 def test_find_skill_gap_detailed():
@@ -132,6 +171,7 @@ def test_predict_structure_and_hybrid_scoring():
         "bonus_skills",
         "top_job_keywords",
         "category_breakdown",
+        "seniority_fit",
         "ats_audit",
         "optimization_plan",
         "resume_word_count",
@@ -145,3 +185,25 @@ def test_predict_structure_and_hybrid_scoring():
     assert results["match_level"] in ["High Match", "Moderate Match", "Low Match"]
     assert len(results["matched_keywords"]) > 0
     assert len(results["optimization_plan"]) > 0
+
+
+def test_simulate_skill_additions():
+    matcher = ResumeJobMatcher()
+    sim = matcher.simulate_skill_additions(
+        SAMPLE_RESUME,
+        SAMPLE_JOB_DESCRIPTION,
+        ["kubernetes", "kafka", "terraform"]
+    )
+    assert sim["score_delta"] >= 0.0
+    assert "kubernetes" in sim["newly_matched_skills"]
+
+
+def test_generate_markdown_report():
+    matcher = ResumeJobMatcher()
+    results = matcher.predict(SAMPLE_RESUME, SAMPLE_JOB_DESCRIPTION)
+    report = matcher.generate_markdown_report(results)
+
+    assert "# TalentBridge AI" in report
+    assert "Key Performance Indicators" in report
+    assert "Technical Competencies Breakdown" in report
+    assert "Applicant Tracking System" in report

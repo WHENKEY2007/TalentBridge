@@ -1,16 +1,18 @@
 """
 Text preprocessing, document parsing (PDF/DOCX/TXT), skills taxonomy extraction,
-and ATS structural diagnostics for Resume–Job Matching.
+synonym normalization, experience analysis, and ATS structural diagnostics.
 """
 
 import io
 import re
-from typing import Any, BinaryIO, Dict, List, Set, Union
+from typing import Any, BinaryIO, Dict, List, Optional, Set, Tuple, Union
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
 from .config import (
     ADDITIONAL_STOPWORDS,
     ESSENTIAL_RESUME_SECTIONS,
+    SENIORITY_LEVELS,
+    SKILL_ALIASES,
     SKILLS_TAXONOMY,
     STRONG_ACTION_VERBS,
 )
@@ -84,34 +86,56 @@ def clean_text(text: str) -> str:
     return cleaned
 
 
+def _canonicalize_skill(skill_term: str) -> str:
+    """Returns canonical skill name if term matches an alias."""
+    term = skill_term.strip().lower()
+    return SKILL_ALIASES.get(term, term)
+
+
 def extract_taxonomy_skills(text: str) -> Dict[str, List[str]]:
     """
-    Scans input text against the curated technical skills taxonomy.
-    Matches both single-token and multi-word phrases (e.g., 'rest api', 'spring boot').
+    Scans input text against the curated technical skills taxonomy,
+    performing canonical alias resolution (e.g., 'k8s' -> 'kubernetes', 'postgres' -> 'postgresql').
+    Matches both single-token and multi-word phrases.
     Returns skills grouped by domain category.
     """
     cleaned = clean_text(text)
     if not cleaned:
         return {cat: [] for cat in SKILLS_TAXONOMY}
 
-    detected_by_category: Dict[str, List[str]] = {}
+    detected_by_category: Dict[str, Set[str]] = {cat: set() for cat in SKILLS_TAXONOMY}
 
+    # 1. Scan for canonical taxonomy skills
     for category, skill_set in SKILLS_TAXONOMY.items():
-        found_in_category: List[str] = []
         for skill in skill_set:
-            # Word boundary matching to avoid partial token false positives (e.g., 'go' inside 'good')
             escaped_skill = re.escape(skill)
             pattern = rf"(?:\b|\s|^){escaped_skill}(?:\b|\s|$)"
             if re.search(pattern, cleaned):
-                found_in_category.append(skill)
-        detected_by_category[category] = sorted(found_in_category)
+                canonical = _canonicalize_skill(skill)
+                # Place canonical in appropriate category if found
+                target_cat = category
+                for cat_name, cat_skills in SKILLS_TAXONOMY.items():
+                    if canonical in cat_skills:
+                        target_cat = cat_name
+                        break
+                detected_by_category[target_cat].add(canonical)
 
-    return detected_by_category
+    # 2. Scan for alias triggers
+    for alias, canonical in SKILL_ALIASES.items():
+        escaped_alias = re.escape(alias)
+        pattern = rf"(?:\b|\s|^){escaped_alias}(?:\b|\s|$)"
+        if re.search(pattern, cleaned):
+            for cat_name, cat_skills in SKILLS_TAXONOMY.items():
+                if canonical in cat_skills:
+                    detected_by_category[cat_name].add(canonical)
+                    break
+
+    return {cat: sorted(list(skills)) for cat, skills in detected_by_category.items()}
 
 
 def extract_flat_skills(text: str) -> Set[str]:
     """
-    Extracts all taxonomy skills found in text as a flat set of strings.
+    Extracts all taxonomy skills found in text as a flat set of canonical strings.
     """
     categorized = extract_taxonomy_skills(text)
     all_skills: Set[str] = set()
@@ -120,9 +144,143 @@ def extract_flat_skills(text: str) -> Set[str]:
     return all_skills
 
 
+def extract_experience_years(text: str, is_job_description: bool = False) -> Optional[float]:
+    """
+    Extracts years of experience mentioned in resume or required in job description.
+    Handles '5+ years', '3-5 years', 'at least 4 years', 'minimum of 3 years', etc.
+    """
+    if not text:
+        return None
+
+    lower_text = text.lower()
+
+    # Pattern A: range like '3-5 years' or '3 to 5 years'
+    range_matches = re.findall(r"\b(\d+(?:\.\d+)?)\s*(?:-|–|to)\s*(\d+(?:\.\d+)?)\s*(?:years?|yrs?)\b", lower_text)
+    if range_matches:
+        vals = []
+        for low, high in range_matches:
+            val = float(low) if is_job_description else float(high)
+            vals.append(val)
+        if vals:
+            return min(vals) if is_job_description else max(vals)
+
+    # Pattern B: '5+ years', '5 years of experience', '5+ yrs'
+    single_matches = re.findall(
+        r"(?:(?:minimum|at least|min|over)\s+)?(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)(?:\s+(?:of\s+)?experience)?",
+        lower_text
+    )
+    if single_matches:
+        nums = [float(n) for n in single_matches if 0.5 <= float(n) <= 40.0]
+        if nums:
+            return min(nums) if is_job_description else max(nums)
+
+    # Fallback pattern: date spans like '2019 - Present' or '2018 - 2023'
+    if not is_job_description:
+        spans = re.findall(r"\b(20\d{2})\s*(?:-|–|to)\s*(20\d{2}|present|current)\b", lower_text)
+        current_year = 2026
+        total_span = 0.0
+        for start_str, end_str in spans:
+            start_yr = int(start_str)
+            end_yr = current_year if end_str in ("present", "current") else int(end_str)
+            if end_yr >= start_yr:
+                total_span += (end_yr - start_yr)
+        if total_span > 0:
+            return min(total_span, 30.0)
+
+    return None
+
+
+def detect_seniority_level(text: str, years: Optional[float] = None) -> str:
+    """
+    Infers seniority level from explicit title keywords and experience duration.
+    """
+    if not text:
+        return "Unspecified"
+
+    lower_text = text.lower()
+
+    # Priority check by explicit titles / keywords
+    if any(re.search(rf"\b{re.escape(kw)}\b", lower_text) for kw in ["principal", "staff engineer", "architect", "lead engineer", "tech lead"]):
+        return "Lead / Staff / Principal"
+    if any(re.search(rf"\b{re.escape(kw)}\b", lower_text) for kw in ["senior", "sr."]):
+        return "Senior Engineer"
+    if any(re.search(rf"\b{re.escape(kw)}\b", lower_text) for kw in ["intern", "internship", "trainee", "associate"]):
+        return "Intern / Entry-Level"
+    if any(re.search(rf"\b{re.escape(kw)}\b", lower_text) for kw in ["junior", "jr."]):
+        return "Junior Engineer"
+
+    # Fallback to experience years
+    if years is not None:
+        for level, cfg in SENIORITY_LEVELS.items():
+            if cfg["min_years"] <= years <= cfg["max_years"]:
+                return level
+
+    return "Mid-Level Engineer"
+
+
+def evaluate_seniority_fit(resume_text: str, job_text: str) -> Dict[str, Any]:
+    """
+    Evaluates alignment between candidate experience and role seniority demands.
+    Returns quantitative fit score, candidate/job years, and qualitative status.
+    """
+    cand_years = extract_experience_years(resume_text, is_job_description=False)
+    req_years = extract_experience_years(job_text, is_job_description=True)
+
+    cand_level = detect_seniority_level(resume_text, cand_years)
+    job_level = detect_seniority_level(job_text, req_years)
+
+    if req_years is None:
+        # If job doesn't specify numeric years, evaluate level alignment
+        fit_score = 0.90
+        status = "Role has open experience requirements"
+        badge = "Flexible Fit"
+        color = "#22c55e"
+    elif cand_years is None:
+        fit_score = 0.70
+        status = f"Candidate experience duration not explicitly stated (Job requires {req_years:.1f}+ yrs)"
+        badge = "Experience Unspecified"
+        color = "#f59e0b"
+    elif cand_years >= req_years:
+        excess = cand_years - req_years
+        if excess <= 5.0:
+            fit_score = 1.0
+            status = f"Candidate meets or exceeds required experience ({cand_years:.1f} yrs vs {req_years:.1f}+ yrs required)"
+            badge = "Well Matched"
+            color = "#22c55e"
+        else:
+            fit_score = 0.92
+            status = f"Candidate is highly experienced for this role ({cand_years:.1f} yrs vs {req_years:.1f}+ yrs required)"
+            badge = "Seniority Premium"
+            color = "#3b82f6"
+    else:
+        deficit = req_years - cand_years
+        if deficit <= 1.5:
+            fit_score = 0.80
+            status = f"Candidate is close to required experience ({cand_years:.1f} yrs vs {req_years:.1f}+ yrs required)"
+            badge = "Close Match"
+            color = "#f59e0b"
+        else:
+            fit_score = max(0.40, 1.0 - (deficit * 0.15))
+            status = f"Candidate experience is below requirement ({cand_years:.1f} yrs vs {req_years:.1f}+ yrs required)"
+            badge = "Experience Gap"
+            color = "#ef4444"
+
+    return {
+        "candidate_years": cand_years,
+        "required_years": req_years,
+        "candidate_level": cand_level,
+        "job_level": job_level,
+        "fit_score": round(fit_score, 2),
+        "status": status,
+        "badge": badge,
+        "color": color,
+    }
+
+
 def find_skill_gap_detailed(resume_text: str, job_text: str) -> Dict[str, Any]:
     """
     Performs comprehensive skill gap analysis between resume and job description.
+    Utilizes canonical alias resolution.
     Returns categorized matches, missing items, and coverage ratios.
     """
     resume_categorized = extract_taxonomy_skills(resume_text)
@@ -178,6 +336,7 @@ def audit_resume_structure(resume_text: str) -> Dict[str, Any]:
         return {
             "word_count": 0,
             "length_status": "Empty",
+            "length_color": "#94a3b8",
             "sections_present": [],
             "sections_missing": list(ESSENTIAL_RESUME_SECTIONS.keys()),
             "action_verbs_found": [],
@@ -251,7 +410,6 @@ def audit_resume_structure(resume_text: str) -> Dict[str, Any]:
     }
 
 
-# Backwards compatibility helper for baseline interface
 def extract_keywords(text: str, top_n: int = 35) -> List[str]:
     """Extracts general vocabulary keywords."""
     cleaned = clean_text(text)
