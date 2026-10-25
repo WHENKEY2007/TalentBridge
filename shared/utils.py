@@ -83,6 +83,24 @@ def inject_custom_css() -> None:
             visibility: hidden !important;
         }
 
+        /* Suppress Careerflow extension host elements */
+        careerflow-root,
+        careerflow-sidebar,
+        careerflow-container,
+        careerflow-app,
+        careerflow-widget,
+        [id*="careerflow"],
+        [class*="careerflow"],
+        [id*="career-flow"],
+        [class*="career-flow"] {
+            display: none !important;
+            visibility: hidden !important;
+            width: 0px !important;
+            height: 0px !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
         /* Full width modern page background */
         .stApp {
             background-color: #f8fafc;
