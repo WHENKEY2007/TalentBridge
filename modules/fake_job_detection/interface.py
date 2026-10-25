@@ -3,6 +3,7 @@
 
 import pandas as pd
 import streamlit as st
+from shared.utils import render_disclaimer
 
 from .model import FakeJobDetector, DATA_PATH, MODEL_PATH
 
@@ -44,10 +45,14 @@ def render() -> None:
     st.title("Job Listings")
     st.caption("TalentBridge AI · Fake Job Posting Detection")
 
-    st.info(
-        "Only postings predicted as legitimate by our ML model are shown. "
-        "Trust scores are estimates and do not guarantee authenticity."
-    )
+    render_disclaimer(
+        custom_message=(
+            "Our AI model screens historical job listings and estimates their "
+            "likelihood of being legitimate. Trust scores are estimates, not "
+            "proof of authenticity. Always verify employers and job offers "
+            "independently before sharing personal information or applying."
+        )
+)
 
     try:
         jobs = get_screened_jobs()
