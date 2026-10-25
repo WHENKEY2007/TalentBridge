@@ -22,11 +22,55 @@ def inject_custom_css() -> None:
         """
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+        @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+        @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
-        /* Global Typography & Font Smoothing */
-        html, body, [class*="css"], [class*="st-"] {
+        /* Global Typography: Applied cleanly to text, NEVER breaking icon fonts */
+        html, body, p, h1, h2, h3, h4, h5, h6, label, input, textarea, select,
+        div.stMarkdown, div[data-testid="stMetricValue"], div[data-testid="stMetricLabel"],
+        .flashcard-box, div.stTabs, div[data-baseweb="tab"] {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
             letter-spacing: -0.015em;
+        }
+
+        /* Explicitly protect all Streamlit Material Symbols and SVG icons from font-family overrides */
+        [data-testid="stIconMaterial"],
+        [data-testid*="stIcon"],
+        [data-testid*="Icon"],
+        [data-testid="stExpanderToggleIcon"],
+        .material-symbols-rounded,
+        .material-symbols-outlined,
+        .material-icons,
+        span[class*="material-symbols"],
+        i[class*="material-symbols"] {
+            font-family: 'Material Symbols Rounded', 'Material Symbols Outlined', 'Material Icons' !important;
+            font-weight: normal !important;
+            font-style: normal !important;
+            font-size: 20px !important;
+            line-height: 1 !important;
+            letter-spacing: normal !important;
+            text-transform: none !important;
+            display: inline-block !important;
+            white-space: nowrap !important;
+            word-wrap: normal !important;
+            direction: ltr !important;
+            font-feature-settings: 'liga' 1 !important;
+            -webkit-font-feature-settings: 'liga' 1 !important;
+            -webkit-font-smoothing: antialiased !important;
+            user-select: none !important;
+        }
+
+        /* Ensure Expander headers have proper layout without overlapping text */
+        [data-testid="stExpander"] summary {
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+        }
+
+        [data-testid="stExpander"] summary p {
+            margin: 0 !important;
+            display: inline-block !important;
         }
 
         /* Completely hide left sidebar and sidebar toggle control */
