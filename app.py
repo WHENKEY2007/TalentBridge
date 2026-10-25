@@ -154,8 +154,8 @@ MODULE_REGISTRY: List[Dict[str, Any]] = [
         "category": "Talent Acquisition",
         "icon": "🔍",
         "module_path": "modules.resume_analyzer.interface",
-        "status": "In Development",
-        "badge_color": "#f59e0b",
+        "status": "Production Ready",
+        "badge_color": "#10b981",
         "description": "Multi-dimensional resume audit examining ATS readiness, action-verb density, and structure.",
     },
     {
@@ -255,7 +255,7 @@ def render_platform_overview() -> None:
     with kpi1:
         st.metric(label="Total ML Engines", value="12 Modules", help="Independent machine learning systems")
     with kpi2:
-        st.metric(label="Active Production Engines", value="1 Module", help="Member 1 Resume–Job Matching baseline")
+        st.metric(label="Active Production Engines", value="2 Modules", help="Member 1 (Resume Matching) & Member 10 (Resume Analyzer)")
     with kpi3:
         st.metric(label="Team Contributors", value="12 Leads", help="Strictly isolated development sandboxes")
     with kpi4:
