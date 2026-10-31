@@ -61,14 +61,14 @@ MODULE_REGISTRY: List[Dict[str, Any]] = [
     },
     {
         "id": "fake_job_detection",
-        "title": "Fake Job & Internship Detection",
-        "member": "24P31A42D0 & 24B11AI134",
+        "title": "Fake Job & Internship Posting Detection",
+        "member": "24B11AI134 & 24P31A42D0",
         "category": "Trust & Safety",
         "icon": "🛡️",
         "module_path": "modules.fake_job_detection.interface",
         "status": "Production Ready",
         "badge_color": "#10b981",
-        "description": "Unified NLP & threat scanner detecting fraudulent recruitment postings, unpaid internship scams, and phishing.",
+        "description": "Unified NLP text classifier & threat scanner detecting fraudulent job postings, unpaid internship scams, and phishing.",
     },
     {
         "id": "student_performance",
@@ -159,17 +159,6 @@ MODULE_REGISTRY: List[Dict[str, Any]] = [
         "description": "Multi-dimensional resume audit examining ATS readiness, action-verb density, and structure.",
     },
     {
-        "id": "internship_fraud_detection",
-        "title": "Fake Internship & Job Detection",
-        "member": "24B11AI134 & 24P31A42D0",
-        "category": "Trust & Safety",
-        "icon": "🚨",
-        "module_path": "modules.internship_fraud_detection.interface",
-        "status": "Production Ready",
-        "badge_color": "#10b981",
-        "description": "Unified fraud detection engine safeguarding student applicants against deceptive, unpaid, or fee-charging internship listings.",
-    },
-    {
         "id": "personalized_learning",
         "title": "Personalized Learning Recommendations",
         "member": "Member 12",
@@ -241,7 +230,7 @@ def render_top_navbar(current_module: Optional[Dict[str, Any]] = None) -> None:
                             TalentBridge AI
                         </div>
                         <div style="font-size: 0.8rem; color: #64748b; font-weight: 500;">
-                            12-Member Integrated Machine Learning Platform
+                            Unified Multi-Member Machine Learning Platform
                         </div>
                     </div>
                 </div>
@@ -292,7 +281,7 @@ def render_platform_overview() -> None:
                         Talent Intelligence & ML Ecosystem
                     </h1>
                     <p style="margin: 0.5rem 0 0 0; color: #94a3b8; font-size: 1.02rem; line-height: 1.5;">
-                        Explore our 12 independent machine learning modules. Click on any card below to launch its dedicated AI workspace.
+                        Explore our unified machine learning modules. Click on any card below to launch its dedicated AI workspace.
                     </p>
                 </div>
             </div>
@@ -304,7 +293,7 @@ def render_platform_overview() -> None:
     # Top KPI Metrics Cards
     kpi1, kpi2, kpi3, kpi4 = st.columns(4)
     with kpi1:
-        st.metric(label="Total ML Engines", value="12 Modules", help="Independent machine learning systems")
+        st.metric(label="Total ML Engines", value=f"{len([m for m in MODULE_REGISTRY if m['id'] != 'overview'])} Modules", help="Independent machine learning systems")
     with kpi2:
         st.metric(label="Active Production Engines", value=f"{sum(1 for m in MODULE_REGISTRY if m.get('status') == 'Production Ready')} Modules", help="Production ready modules")
     with kpi3:

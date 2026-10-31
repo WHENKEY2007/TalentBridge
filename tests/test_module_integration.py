@@ -27,7 +27,6 @@ EXPECTED_MODULES: List[str] = [
     "fairness_recruitment",
     "employee_attrition",
     "resume_analyzer",
-    "internship_fraud_detection",
     "personalized_learning",
 ]
 
@@ -89,8 +88,8 @@ def test_app_module_registry():
     registry_module_ids = [m["id"] for m in app.MODULE_REGISTRY if m["id"] != "overview"]
 
     # Check length
-    assert len(registry_module_ids) == 12, (
-        f"Registry should have 12 ML modules, found {len(registry_module_ids)}"
+    assert len(registry_module_ids) == len(EXPECTED_MODULES), (
+        f"Registry should have {len(EXPECTED_MODULES)} ML modules, found {len(registry_module_ids)}"
     )
 
     # Check all expected IDs are registered

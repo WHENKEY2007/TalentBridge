@@ -1,6 +1,6 @@
 # 🌉 TalentBridge AI — Integrated Machine Learning Platform
 
-> A modular, 12-member machine learning and talent intelligence platform unifying predictive analytics, NLP, and career recommendation systems into a single enterprise-ready application.
+> A modular, integrated machine learning and talent intelligence platform unifying predictive analytics, NLP, and career recommendation systems into a single enterprise-ready application.
 
 [![Python Version](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.14-blue.svg)](https://www.python.org/)
 [![UI Framework](https://img.shields.io/badge/UI-Streamlit-FF4B4B.svg)](https://streamlit.io/)
@@ -22,18 +22,17 @@ The platform is designed around **strict modular architecture** allowing 12 deve
 
 | # | Module Directory | Use Case Name | Assigned Lead | Current Status |
 |---|------------------|---------------|---------------|----------------|
-| 1 | `modules/resume_job_matching/` | **Resume–Job Matching** | **Member 1 (Lead)** | ✅ **Production Hybrid Engine (Completed & Verified)** |
-| 2 | `modules/fake_job_detection/` | Fake Job Posting Detection | Member 2 | 🚧 In Development (Scaffold Ready) |
-| 3 | `modules/student_performance/` | Student Performance Prediction | Member 3 | 🚧 In Development (Scaffold Ready) |
-| 4 | `modules/entrance_exam_prediction/` | Entrance Examination Performance Prediction | Member 4 | 🚧 In Development (Scaffold Ready) |
+| 1 | `modules/resume_job_matching/` | **Resume–Job Matching** | **Member 1 (24B11AI304)** | ✅ **Production Hybrid Engine (Completed & Verified)** |
+| 2 | `modules/fake_job_detection/` | **Fake Job & Internship Posting Detection** | **24B11AI134 & 24P31A42D0** | ✅ **Production Threat Scanner & NLP Classifier** |
+| 3 | `modules/student_performance/` | **Student Performance Prediction** | **Member 3 (24B11AI070)** | ✅ **Production Dual-Pipeline Engine** |
+| 4 | `modules/entrance_exam_prediction/` | Entrance Examination Performance Prediction | Member 4 (24P31A4255) | 🚧 In Development (Scaffold Ready) |
 | 5 | `modules/placement_risk/` | Student Placement Risk Prediction | Member 5 | 🚧 In Development (Scaffold Ready) |
 | 6 | `modules/interview_analyzer/` | AI Interview Performance Analysis & Feedback | Member 6 | 🚧 In Development (Scaffold Ready) |
 | 7 | `modules/learning_difficulty/` | Personalized Learning Difficulty Detection | Member 7 | 🚧 In Development (Scaffold Ready) |
-| 8 | `modules/fairness_recruitment/` | Fairness-Aware Recruitment | Member 8 | 🚧 In Development (Scaffold Ready) |
-| 9 | `modules/employee_attrition/` | Employee Attrition Prediction | Member 9 | 🚧 In Development (Scaffold Ready) |
-| 10 | `modules/resume_analyzer/` | **AI Resume Analysis** | **Member 10** | ✅ **Production Ready (PR #1 Merged)** |
-| 11 | `modules/internship_fraud_detection/` | Fake Internship Detection | Member 11 | 🚧 In Development (Scaffold Ready) |
-| 12 | `modules/personalized_learning/` | Personalized Learning Recommendations | Member 12 | 🚧 In Development (Scaffold Ready) |
+| 8 | `modules/fairness_recruitment/` | Fairness-Aware Recruitment | Member 8 (24B11AI159) | 🚧 In Development (Scaffold Ready) |
+| 9 | `modules/employee_attrition/` | Employee Attrition Prediction | Member 9 (24B11AI446) | 🚧 In Development (Scaffold Ready) |
+| 10 | `modules/resume_analyzer/` | **AI Resume Analysis** | **Member 10 (24B11AI109)** | ✅ **Production Ready (PR #1 Merged)** |
+| 11 | `modules/personalized_learning/` | Personalized Learning Recommendations | Member 12 | 🚧 In Development (Scaffold Ready) |
 
 ---
 
@@ -41,7 +40,7 @@ The platform is designed around **strict modular architecture** allowing 12 deve
 
 The user interface uses a modern **card-based portal architecture** designed for high clarity and zero clutter:
 - **No Left Sidebar Clutter:** The default Streamlit sidebar is completely collapsed and hidden, dedicating 100% of the screen width to the active dashboard or module.
-- **Interactive Flashcards:** The home page features a clean 3-column grid displaying all 12 modules with category tags, status badges, descriptions, and 1-click launch buttons.
+- **Interactive Flashcards:** The home page features a clean 3-column grid displaying all 11 modules with category tags, status badges, descriptions, and 1-click launch buttons.
 - **Breadcrumb Navigation:** Inside any active module, a top-level `← Back to Dashboard` navigation bar enables seamless return to the portal.
 
 ---
@@ -53,7 +52,7 @@ TalentBridge-AI/
 ├── app.py                     # Central Streamlit entry point & lazy module loader
 ├── requirements.txt           # Core project dependencies
 ├── README.md                  # Root architectural & team collaboration documentation
-├── CONTRIBUTING.md            # Contribution guidelines for all 12 team members
+├── CONTRIBUTING.md            # Contribution guidelines for team members
 ├── .gitignore                 # Excludes models, venv, datasets, caches, IDE files
 ├── .github/
 │   ├── CODEOWNERS             # Enforces code ownership per module
@@ -89,7 +88,6 @@ TalentBridge-AI/
 │   ├── learning_difficulty/         # [MEMBER 7]  (Scaffold Ready)
 │   ├── fairness_recruitment/        # [MEMBER 8]  (Scaffold Ready)
 │   ├── employee_attrition/          # [MEMBER 9]  (Scaffold Ready)
-│   ├── internship_fraud_detection/  # [MEMBER 11] (Scaffold Ready)
 │   └── personalized_learning/       # [MEMBER 12] (Scaffold Ready)
 │
 ├── shared/
