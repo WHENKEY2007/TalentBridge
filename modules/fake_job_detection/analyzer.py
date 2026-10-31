@@ -203,3 +203,4 @@ def audit_job_posting_security(
         "safety_steps": safety_steps,
         "character_count": len(full_text),
     }
+

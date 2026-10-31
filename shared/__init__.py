@@ -8,6 +8,7 @@ from .utils import (
     render_disclaimer,
     render_placeholder,
     safe_import_render,
+    safe_html,
 )
 
 __all__ = [
@@ -15,4 +16,5 @@ __all__ = [
     "render_disclaimer",
     "render_placeholder",
     "safe_import_render",
+    "safe_html",
 ]

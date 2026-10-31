@@ -4,8 +4,24 @@ Full-width portal layout with flashcard navigation and zero sidebar clutter.
 """
 
 import importlib
+import textwrap
 import traceback
 from typing import Callable, Optional, Sequence
+
+
+def safe_html(body: str) -> None:
+    """
+    Renders HTML cleanly without Markdown indentation code-block artifacts.
+    Uses modern st.html when available, falling back to textwrap.dedent + st.markdown.
+    """
+    import streamlit as st
+
+    cleaned = textwrap.dedent(body).strip()
+    if hasattr(st, "html"):
+        st.html(cleaned)
+    else:
+        st.markdown(cleaned, unsafe_allow_html=True)
+
 
 
 def inject_custom_css() -> None:
