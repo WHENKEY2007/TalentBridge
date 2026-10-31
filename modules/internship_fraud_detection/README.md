@@ -1,70 +1,45 @@
-# Fake Internship Detection
+# Fake Job and Internship Posting Detection Using NLP & ML
 
-**Assigned Lead:** Member 11  
-**Module Identifier:** `modules.internship_fraud_detection`  
-**Status:** 🚧 In Development (Scaffold Ready)  
-
----
-
-## 1. Module Overview
-Protects student job-seekers from predatory, unpaid fee-charging, or fraudulent internship listings.
-
-This module operates independently within the TalentBridge AI platform. As **Member 11**, you own this directory and can develop, experiment, train models, and create tests without altering other members' code.
+**Assigned Leads:** Member 11 (`24B11AI134`) & Member 2 (`24P31A42D0`)  
+**Module Identifiers:** `modules.internship_fraud_detection` & `modules.fake_job_detection`  
+**Status:** ✅ Production Ready (Unified Engine)
 
 ---
 
-## 2. Interface Contract
-TalentBridge AI dynamically loads this module via the `render()` function in `interface.py`:
+## 1. Unified Architecture & Overview
+This module unifies **Fake Job Posting Detection** and **Fake Internship Detection** into a single, comprehensive fraud screening and security analysis engine. It protects both job seekers and college student applicants against:
+- High-risk employment scams (cashier check cashing, advance equipment fees, money mule schemes).
+- Predatory student internship scams (mandatory certificate purchase fees, offer letter processing charges, paid training kit scams, campus ambassador MLM schemes).
+- Off-platform recruiter phishing operations (unregulated Telegram / WhatsApp interviews, free webmail impersonators).
 
+---
+
+## 2. Key Capabilities
+1. **Live Document & Offer Letter Upload:** Accepts `.pdf`, `.docx`, and `.txt` files to extract text and audit security threat vectors in real time.
+2. **Dual-Layer Evaluation:**
+   - **Machine Learning Classification:** Logistic Regression pipeline with sublinear TF-IDF (50,000 features, unigram + bigram) trained on verified job records.
+   - **Heuristic Threat Audit:** Pattern-matches critical red flags (upfront certificate fees, check cashing, disposable email domains, crypto transfers).
+3. **Interactive Security Audit Report:**
+   - Composite Authenticity Trust Score (0 – 100)
+   - Estimated Fraud Probability
+   - Matched Red Flag Snippets with Severity Ratings (`Critical`, `High`, `Medium`)
+   - Candidate Safety Action Checklist
+   - Downloadable Markdown Audit Summary
+4. **Verified Screened Job & Internship Browser:** Searchable historical listings filtered at a 0.5 fraud probability threshold.
+
+---
+
+## 3. Interface Contract
+Both modules expose the standard TalentBridge AI `render()` contract:
 ```python
 def render() -> None:
-    # Build your Streamlit UI components here
-    # Call your trained model from model.py
-    pass
+    """Renders the unified Fake Job & Internship Detection workspace."""
 ```
 
 ---
 
-## 3. Specifications & Architecture
-
-### Expected Inputs
-- Internship Title, Stipend details, and Company registration
-- Application requirements (e.g. upfront security deposits requested)
-- Domain verification & Contact information
-
-### Expected Outputs
-- Scam Risk Probability (0.0 to 1.0)
-- Risk Level: 'Verified Safe' vs 'Suspicious' vs 'High Scam Threat'
-- Detected Red Flags (e.g. 'Demands registration fee', 'Unregistered domain')
-
-### Recommended ML Approaches
-- `TF-IDF + Naive Bayes / SVM`
-- `Ensemble Tree Classifiers`
-- `Rule-based Red Flag Scoring Engine`
-
----
-
-## 4. Directory Structure
+## 4. Verification
+Run the dedicated test suite:
+```bash
+python -m pytest modules/internship_fraud_detection/tests/ -v
 ```
-modules/internship_fraud_detection/
-├── __init__.py          # Exports render() and InternshipFraudDetector
-├── interface.py         # Streamlit UI contract
-├── model.py             # Machine learning model class & pipeline
-├── README.md            # This documentation
-├── data/
-│   └── .gitkeep         # Training data (ignored by git if large)
-├── artifacts/
-│   └── .gitkeep         # Serialized models (.pkl, .joblib, etc.)
-└── tests/
-    └── .gitkeep         # Unit tests (e.g., test_internship_fraud_detection.py)
-```
-
----
-
-## 5. Next Steps for Member 11
-1. **Branch Out:** Create your git feature branch: `git checkout -b feature/member-11-internship_fraud_detection`.
-2. **Collect Data:** Add your training data into `modules/internship_fraud_detection/data/`.
-3. **Build Pipeline:** Implement data preprocessing and ML training in `model.py` (or add a `train.py`).
-4. **Save Artifacts:** Save your model weights into `artifacts/`.
-5. **Connect UI:** Replace the scaffold in `interface.py` with custom Streamlit controls.
-6. **Add Unit Tests:** Write test cases in `modules/internship_fraud_detection/tests/test_internship_fraud_detection.py`.

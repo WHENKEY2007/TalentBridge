@@ -17,6 +17,21 @@ from .analyzer import audit_job_posting_security, parse_job_document
 from .model import DATA_PATH, MODEL_PATH, FakeJobDetector
 
 SAMPLE_PRESETS = {
+    "🚨 Scam: Internship Training & Certificate Fee ($120)": {
+        "title": "AI & Machine Learning Virtual Intern",
+        "company": "EduSkills Tech Innovations",
+        "text": (
+            "Congratulations! Your profile has been selected for our 8-week Remote AI & ML Internship program.\n\n"
+            "Roles & Benefits:\n"
+            "- Work on live projects and receive an industry-recognized completion certificate & LOR.\n"
+            "- Flexible working hours for college students.\n\n"
+            "Important Notice for Selected Students:\n"
+            "To confirm your seat, issue your verified offer letter, and access our proprietary training kit, "
+            "every student intern is required to pay a mandatory internship registration fee of $120 (refundable upon "
+            "completion). Please wire the processing charge directly to registrar-eduskills@gmail.com or send via "
+            "CashApp. Candidates who do not pay within 24 hours will forfeit their offer letter and certificate."
+        ),
+    },
     "✅ Legitimate: Senior Python / Cloud Engineer": {
         "title": "Senior Python Backend Engineer",
         "company": "CloudScale Systems Inc.",
@@ -463,9 +478,9 @@ def render_browser_tab(detector: FakeJobDetector) -> None:
 
 
 def render() -> None:
-    """Entry point for Fake Job Posting Detection interface."""
-    st.title("🛡️ Fake Job Posting Detection & Verification")
-    st.caption("TalentBridge AI · Natural Language Processing & Security Auditing")
+    """Entry point for Fake Job and Internship Posting Detection interface."""
+    st.title("🛡️ Fake Job & Internship Posting Detection")
+    st.caption("TalentBridge AI · Natural Language Processing & Fraud Threat Auditing (24B11AI134 & 24P31A42D0)")
 
     render_disclaimer(
         custom_message=(

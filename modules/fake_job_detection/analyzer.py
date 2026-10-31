@@ -51,6 +51,20 @@ def parse_job_document(file_data: Union[Any, bytes], filename: str) -> str:
 
 RED_FLAG_PATTERNS = [
     {
+        "category": "Fake Internship Fee / Certificate Charge",
+        "severity": "Critical",
+        "pattern": r"\b(certificate\s+fee|offer\s+letter\s+fee|internship\s+registration\s+fee|pay\s+for\s+(training|certificate|lor)|mandatory\s+course\s+fee|security\s+deposit.*intern|processing\s+charge.*intern|paid\s+training\s+kit)\b",
+        "title": "Internship Training / Certificate Fee Extortion",
+        "description": "Demands payment or registration fees from student applicants under the guise of training kits, certification, offer letter processing, or LOR issuance.",
+    },
+    {
+        "category": "Predatory Campus Ambassador / Student MLM",
+        "severity": "High",
+        "pattern": r"\b(campus\s+ambassador.*refer|bring\s+\d+\s+friends.*stipend|recruit.*students.*commission|sell\s+courses.*intern|unpaid.*100%\s+commission)\b",
+        "title": "Predatory Campus Ambassador / Student MLM Scheme",
+        "description": "Conditions student completion certificates or stipends on recruiting classmates or selling training subscriptions.",
+    },
+    {
         "category": "Off-Platform Communication",
         "severity": "High",
         "pattern": r"\b(telegram|@\w+_?(recruit|hr|jobs?|hiring)|whatsapp|\+1-\d{3}-fake|signal\s+app|hangouts)\b",

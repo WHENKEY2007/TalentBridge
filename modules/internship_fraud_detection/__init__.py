@@ -1,6 +1,6 @@
 """
-TalentBridge AI - Fake Internship Detection Module
-Assigned Lead: Member 11
+TalentBridge AI - Fake Job and Internship Posting Detection Module
+Assigned Leads: 24B11AI134 & 24P31A42D0
 """
 
 from .interface import render
