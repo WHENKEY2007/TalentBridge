@@ -26,7 +26,7 @@ The platform is designed around **strict modular architecture** allowing 8 stude
 | 2 | `modules/fake_job_detection/` | **Fake Job & Internship Posting Detection** | **24B11AI134 & 24P31A42D0** | ✅ **Production Ready** | Single unified module covering job & internship fraud |
 | 3 | `modules/student_performance/` | **Student Performance Prediction** | **24B11AI070** | ✅ **Production Ready** | Production dual-pipeline (GPA regressor + risk classifier), 7 unit tests passing |
 | 4 | `modules/entrance_exam_prediction/` | Student Performance on Entrance Examination | 24P31A4255 | 🚧 In Development | Scaffold in platform |
-| 5 | `modules/fairness_recruitment/` | Fairness-Aware AI Recruitment | 24B11AI159 | ✅ Implemented | Resume parsing, job matching, simulated bias analysis, counterfactual testing, fairer ranking and candidate explanations |
+| 5 | `modules/fairness_recruitment/` | Fairness-Aware AI Recruitment | 24B11AI159 | 🚧 In Development | Scaffold only (Workplace retention forecasting) |
 | 6 | `modules/employee_attrition/` | Employee Attrition Prediction | 24B11AI446 | 🚧 In Development | Scaffold only (Workplace retention forecasting) |
 | 7 | `modules/resume_analyzer/` | **AI Resume Analyzer** | **24B11AI109** | ✅ **Production Ready** | Production GradientBoosting scorer + ATS audit, 13 unit tests passing |
 
