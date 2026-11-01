@@ -26,7 +26,7 @@ The platform is designed around **strict modular architecture** allowing 8 stude
 | 2 | `modules/fake_job_detection/` | **Fake Job & Internship Posting Detection** | **24B11AI134 & 24P31A42D0** | ✅ **Production Ready** | Single unified module covering job & internship fraud |
 | 3 | `modules/student_performance/` | **Student Performance Prediction** | **24B11AI070** | ✅ **Production Ready** | Production dual-pipeline (GPA regressor + risk classifier), 7 unit tests passing |
 | 4 | `modules/entrance_exam_prediction/` | Student Performance on Entrance Examination | 24P31A4255 | 🚧 In Development | Scaffold in platform |
-| 5 | `modules/fairness_recruitment/` | Fairness-Aware AI Recruitment | 24B11AI159 | 🚧 In Development | Scaffold only (Workplace retention forecasting) |
+| 5 | `modules/fairness_recruitment/` | **Fairness-Aware AI Recruitment** | **24B11AI159** | ✅ **Production Ready** | FairHire counterfactual bias auditor + fair re-ranking, 5 unit tests passing |
 | 6 | `modules/employee_attrition/` | Employee Attrition Prediction | 24B11AI446 | 🚧 In Development | Scaffold only (Workplace retention forecasting) |
 | 7 | `modules/resume_analyzer/` | **AI Resume Analyzer** | **24B11AI109** | ✅ **Production Ready** | Production GradientBoosting scorer + ATS audit, 13 unit tests passing |
 
@@ -77,9 +77,10 @@ TalentBridge-AI/
 │   │   ├── __init__.py, interface.py, model.py, README.md
 │   │   └── tests/
 │   │
-│   ├── fairness_recruitment/  # [24B11AI159] In Development
-│   │   ├── __init__.py, interface.py, model.py, README.md
-│   │   └── tests/
+│   ├── fairness_recruitment/  # [24B11AI159] Production FairHire Bias Auditor
+│   │   ├── __init__.py, interface.py, model.py, fairhire_core.py, fairhire_ui.py, README.md
+│   │   ├── data/ananya_iyer.txt, data/sample_jd.txt
+│   │   └── tests/test_fairhire_core.py # 5 unit tests
 │   │
 │   ├── employee_attrition/    # [24B11AI446] In Development
 │   │   ├── __init__.py, interface.py, model.py, README.md

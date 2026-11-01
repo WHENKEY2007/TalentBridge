@@ -37,3 +37,20 @@ def test_parse_resume():
 
     assert result["age"] == 25
     assert "python" in result["skills"]
+
+
+def test_auditor_detects_simulated_bias():
+    from modules.fairness_recruitment import FairnessAuditor
+
+    resumes = [
+        ("a.txt", "Rahul Sharma\nAge: 26\nIIT Madras\nSkills: Python, SQL"),
+        ("b.txt", "Priya Nair\nAge: 46\nRegional Engineering College\nSkills: Python, SQL, Machine Learning"),
+        ("c.txt", "Kavya Rao\nAge: 30\nRegional Engineering College\nSkills: Python"),
+    ]
+    result = FairnessAuditor(kind="biased", top_n=1).predict(
+        {"job_description": "Required: Python, SQL, Machine Learning", "resumes": resumes}
+    )
+
+    assert "Gender" in result["flagged"]
+    assert "College" in result["flagged"]
+    assert len(result["rows"]) == 3
