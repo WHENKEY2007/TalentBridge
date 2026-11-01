@@ -23,7 +23,6 @@ def safe_html(body: str) -> None:
         st.markdown(cleaned, unsafe_allow_html=True)
 
 
-
 def inject_custom_css() -> None:
     """
     Injects global enterprise design system styles:
@@ -280,7 +279,7 @@ def inject_custom_css() -> None:
                     if (elIcon) elIcon.remove();
 
                     const crxMatches = targetDoc.querySelectorAll('[id*="crx-root"]');
-                    for (let el of crxMatches) {
+                    for (el of crxMatches) {
                         el.remove();
                     }
                 } catch (e) {}
@@ -313,13 +312,13 @@ def render_module_header(
 
     inject_custom_css()
 
-    st.markdown(
+    safe_html(
         f"""
         <div style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
                     padding: 1.75rem 2rem; border-radius: 16px; margin-bottom: 1.5rem;
                     border: 1px solid rgba(255, 255, 255, 0.1);
                     box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.25);">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: gap: 0.75rem;">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                     <div style="background: rgba(99, 102, 241, 0.25); border: 1px solid rgba(99, 102, 241, 0.4);
                                 width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center;
@@ -351,8 +350,7 @@ def render_module_header(
                 </span>
             </div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
@@ -372,7 +370,7 @@ def render_disclaimer(
     )
     msg = custom_message if custom_message else default_msg
 
-    st.markdown(
+    safe_html(
         f"""
         <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b;
                     padding: 1rem 1.25rem; border-radius: 12px; margin: 2rem 0 1rem 0;
@@ -382,8 +380,7 @@ def render_disclaimer(
                 <div>{msg}</div>
             </div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
@@ -409,7 +406,7 @@ def render_placeholder(
         badge_color="#f59e0b",
     )
 
-    st.markdown(
+    safe_html(
         f"""
         <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.25rem 1.5rem;
                     margin-bottom: 1.5rem; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
@@ -422,34 +419,35 @@ def render_placeholder(
                 <code>modules/{module_key}/</code>. Follow the specification blueprint below to complete the algorithm.
             </p>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown(
-            """
+        inputs_html = "".join([f"<li style='margin-bottom: 0.35rem;'>{item}</li>" for item in expected_inputs])
+        safe_html(
+            f"""
             <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.25rem; height: 100%;">
                 <h4 style="margin-top: 0; color: #0f172a; font-size: 1rem; font-weight: 700;">📥 Expected Inputs</h4>
-            """,
-            unsafe_allow_html=True,
+                <ul style="color: #334155; font-size: 0.88rem; padding-left: 1.2rem; margin: 0.5rem 0 0 0;">
+                    {inputs_html}
+                </ul>
+            </div>
+            """
         )
-        for item in expected_inputs:
-            st.markdown(f"- **{item}**")
-        st.markdown("</div>", unsafe_allow_html=True)
 
     with col2:
-        st.markdown(
-            """
-            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; height: 100%;">
+        outputs_html = "".join([f"<li style='margin-bottom: 0.35rem;'>{item}</li>" for item in expected_outputs])
+        safe_html(
+            f"""
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.25rem; height: 100%;">
                 <h4 style="margin-top: 0; color: #0f172a; font-size: 1rem; font-weight: 700;">📤 Expected Outputs</h4>
-            """,
-            unsafe_allow_html=True,
+                <ul style="color: #334155; font-size: 0.88rem; padding-left: 1.2rem; margin: 0.5rem 0 0 0;">
+                    {outputs_html}
+                </ul>
+            </div>
+            """
         )
-        for item in expected_outputs:
-            st.markdown(f"- **{item}**")
-        st.markdown("</div>", unsafe_allow_html=True)
 
     if suggested_models:
         st.markdown("<br>", unsafe_allow_html=True)
@@ -458,7 +456,7 @@ def render_placeholder(
             f"<span style='background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin: 4px; display: inline-block;'>{model}</span>"
             for model in suggested_models
         ])
-        st.markdown(chips, unsafe_allow_html=True)
+        safe_html(chips)
 
     st.markdown("---")
     st.markdown("### 🛠️ Developer Checklist for Module Owner")

@@ -1,7 +1,7 @@
 """
 TalentBridge AI - Student Performance Prediction User Interface
 Exposes the required render() contract for TalentBridge AI.
-Assigned Lead: Member 3
+Assigned Lead: 24B11AI070
 """
 
 from typing import Any, Dict
@@ -34,7 +34,7 @@ def render() -> None:
 
     render_module_header(
         title="Student Performance & Academic Risk Engine",
-        member="Member 3",
+        member="24B11AI070",
         description=(
             "Dual-pipeline machine learning system forecasting semester GPA trajectories, retention risk, "
             "and graduation probability with real-time academic factor attribution and actionable intervention guidance."

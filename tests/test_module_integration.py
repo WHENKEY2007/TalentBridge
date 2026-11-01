@@ -1,7 +1,7 @@
 """
 TalentBridge AI - Platform Integration Tests
 Validates the architecture, folder structure, contract compliance,
-and registry integrity for all 12 modules.
+and registry integrity for all 7 target modules.
 """
 
 import importlib
@@ -15,24 +15,20 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-# All 12 assigned module identifiers
+# All 7 assigned module identifiers
 EXPECTED_MODULES: List[str] = [
     "resume_job_matching",
     "fake_job_detection",
     "student_performance",
     "entrance_exam_prediction",
-    "placement_risk",
-    "interview_analyzer",
-    "learning_difficulty",
     "fairness_recruitment",
     "employee_attrition",
     "resume_analyzer",
-    "personalized_learning",
 ]
 
 
-def test_all_12_module_directories_exist():
-    """Verify that each of the 12 assigned module directories exists under modules/."""
+def test_all_target_module_directories_exist():
+    """Verify that each of the 7 assigned project module directories exists under modules/."""
     modules_dir = PROJECT_ROOT / "modules"
     assert modules_dir.is_dir(), "The 'modules/' directory must exist."
 
@@ -72,7 +68,7 @@ def test_member_1_complete_structure():
 
 def test_all_modules_satisfy_render_contract():
     """
-    Verify that every one of the 12 modules exposes a callable render() function in interface.py.
+    Verify that every one of the 7 target modules exposes a callable render() function in interface.py.
     """
     for mod_name in EXPECTED_MODULES:
         interface_import_path = f"modules.{mod_name}.interface"
@@ -82,7 +78,7 @@ def test_all_modules_satisfy_render_contract():
 
 
 def test_app_module_registry():
-    """Verify that app.py contains a complete registry covering all 12 modules."""
+    """Verify that app.py contains a complete registry covering all 7 target modules."""
     import app
 
     registry_module_ids = [m["id"] for m in app.MODULE_REGISTRY if m["id"] != "overview"]
@@ -114,3 +110,4 @@ def test_shared_utils_import():
     assert hasattr(utils, "render_disclaimer")
     assert hasattr(utils, "render_placeholder")
     assert hasattr(utils, "safe_import_render")
+    assert hasattr(utils, "safe_html")

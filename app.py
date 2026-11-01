@@ -1,6 +1,7 @@
 """
 TalentBridge AI - Integrated Machine Learning Platform
 Portal Layout with Flashcard Navigation & Zero Sidebar Clutter
+Scoped to 7 Core Machine Learning Modules & Assigned Student Leads
 """
 
 import importlib
@@ -33,8 +34,7 @@ inject_custom_css()
 
 # ==============================================================================
 # Maintainable Module Registry
-# Defines all 12 independent ML use cases and their assigned owners.
-# Future members can update this registry without altering core routing logic.
+# Defines the 7 target ML use cases and their assigned student leads.
 # ==============================================================================
 MODULE_REGISTRY: List[Dict[str, Any]] = [
     {
@@ -46,12 +46,12 @@ MODULE_REGISTRY: List[Dict[str, Any]] = [
         "module_path": None,  # Rendered natively
         "status": "Production",
         "badge_color": "#6366f1",
-        "description": "Unified platform dashboard, 12-member architectural matrix, and system analytics.",
+        "description": "Unified platform dashboard, 7-module architectural matrix, and system analytics.",
     },
     {
         "id": "resume_job_matching",
         "title": "Resume–Job Matching",
-        "member": "Member 1 (Lead)",
+        "member": "24B11AI304 (Lead)",
         "category": "Talent Acquisition",
         "icon": "📄",
         "module_path": "modules.resume_job_matching.interface",
@@ -73,7 +73,7 @@ MODULE_REGISTRY: List[Dict[str, Any]] = [
     {
         "id": "student_performance",
         "title": "Student Performance Prediction",
-        "member": "Member 3",
+        "member": "24B11AI070",
         "category": "Education Analytics",
         "icon": "📈",
         "module_path": "modules.student_performance.interface",
@@ -84,7 +84,7 @@ MODULE_REGISTRY: List[Dict[str, Any]] = [
     {
         "id": "entrance_exam_prediction",
         "title": "Entrance Examination Performance",
-        "member": "Member 4",
+        "member": "24P31A4255",
         "category": "Education Analytics",
         "icon": "🎯",
         "module_path": "modules.entrance_exam_prediction.interface",
@@ -93,42 +93,9 @@ MODULE_REGISTRY: List[Dict[str, Any]] = [
         "description": "Forecasts standardized entrance test percentiles and college admission feasibility tiers.",
     },
     {
-        "id": "placement_risk",
-        "title": "Student Placement Risk Prediction",
-        "member": "Member 5",
-        "category": "Career Readiness",
-        "icon": "⚠️",
-        "module_path": "modules.placement_risk.interface",
-        "status": "In Development",
-        "badge_color": "#f59e0b",
-        "description": "Identifies graduating students needing proactive interventions before campus placements.",
-    },
-    {
-        "id": "interview_analyzer",
-        "title": "AI Interview Performance Analysis",
-        "member": "Member 6",
-        "category": "Career Readiness",
-        "icon": "🎙️",
-        "module_path": "modules.interview_analyzer.interface",
-        "status": "In Development",
-        "badge_color": "#f59e0b",
-        "description": "Evaluates candidate answer transcripts, STAR alignment, clarity, and delivery pace.",
-    },
-    {
-        "id": "learning_difficulty",
-        "title": "Learning Difficulty Detection",
-        "member": "Member 7",
-        "category": "Adaptive Learning",
-        "icon": "🧩",
-        "module_path": "modules.learning_difficulty.interface",
-        "status": "In Development",
-        "badge_color": "#f59e0b",
-        "description": "Real-time struggle detection and cognitive bottleneck identification in online course quizzes.",
-    },
-    {
         "id": "fairness_recruitment",
-        "title": "Fairness-Aware Recruitment",
-        "member": "Member 8",
+        "title": "Fairness-Aware AI Recruitment",
+        "member": "24B11AI159",
         "category": "Ethical AI",
         "icon": "⚖️",
         "module_path": "modules.fairness_recruitment.interface",
@@ -139,7 +106,7 @@ MODULE_REGISTRY: List[Dict[str, Any]] = [
     {
         "id": "employee_attrition",
         "title": "Employee Attrition Prediction",
-        "member": "Member 9",
+        "member": "24B11AI446",
         "category": "Workforce Analytics",
         "icon": "🔄",
         "module_path": "modules.employee_attrition.interface",
@@ -149,8 +116,8 @@ MODULE_REGISTRY: List[Dict[str, Any]] = [
     },
     {
         "id": "resume_analyzer",
-        "title": "AI Resume Analysis",
-        "member": "Member 10",
+        "title": "AI Resume Analyzer",
+        "member": "24B11AI109",
         "category": "Talent Acquisition",
         "icon": "🔍",
         "module_path": "modules.resume_analyzer.interface",
@@ -158,24 +125,13 @@ MODULE_REGISTRY: List[Dict[str, Any]] = [
         "badge_color": "#10b981",
         "description": "Multi-dimensional resume audit examining ATS readiness, action-verb density, and structure.",
     },
-    {
-        "id": "personalized_learning",
-        "title": "Personalized Learning Recommendations",
-        "member": "Member 12",
-        "category": "Adaptive Learning",
-        "icon": "💡",
-        "module_path": "modules.personalized_learning.interface",
-        "status": "In Development",
-        "badge_color": "#f59e0b",
-        "description": "Curates custom skill-building roadmaps and learning modules matched to candidate gaps.",
-    },
 ]
 
 
 def load_module_render_fn(module_path: str) -> Optional[Callable[[], None]]:
     """
     Dynamically imports a module's render() function on demand.
-    Avoids loading all 12 ML models into memory during initial app startup.
+    Avoids loading all ML models into memory during initial app startup.
     """
     try:
         mod = importlib.import_module(module_path)
@@ -209,19 +165,18 @@ def render_top_navbar(current_module: Optional[Dict[str, Any]] = None) -> None:
                 st.session_state["current_module_id"] = "overview"
                 st.rerun()
 
-            st.markdown(
+            safe_html(
                 f"""
                 <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.25rem;">
                     <span style="color: #6366f1; font-weight: 600;">TalentBridge AI</span> / 
                     <span>{current_module['category']}</span> / 
                     <strong style="color: #0f172a;">{current_module['icon']} {current_module['title']}</strong>
                 </div>
-                """,
-                unsafe_allow_html=True,
+                """
             )
         else:
             # On overview: Show primary brand identity
-            st.markdown(
+            safe_html(
                 """
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                     <span style="font-size: 2rem; line-height: 1;">🌉</span>
@@ -234,8 +189,7 @@ def render_top_navbar(current_module: Optional[Dict[str, Any]] = None) -> None:
                         </div>
                     </div>
                 </div>
-                """,
-                unsafe_allow_html=True,
+                """
             )
 
     with nav_col2:
@@ -256,7 +210,7 @@ def render_top_navbar(current_module: Optional[Dict[str, Any]] = None) -> None:
             """
         )
 
-    st.markdown("<div style='border-bottom: 1px solid #e2e8f0; margin: 1rem 0 1.5rem 0;'></div>", unsafe_allow_html=True)
+    safe_html("<div style='border-bottom: 1px solid #e2e8f0; margin: 1rem 0 1.5rem 0;'></div>")
 
 
 def render_platform_overview() -> None:
@@ -265,7 +219,7 @@ def render_platform_overview() -> None:
     Clicking any flashcard opens that module directly without sidebar navigation.
     """
     # Hero Section
-    st.markdown(
+    safe_html(
         """
         <div style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #312e81 100%);
                     padding: 2.5rem 2.5rem; border-radius: 18px; margin-bottom: 2rem;
@@ -286,25 +240,40 @@ def render_platform_overview() -> None:
                 </div>
             </div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
     # Top KPI Metrics Cards
     kpi1, kpi2, kpi3, kpi4 = st.columns(4)
     with kpi1:
-        st.metric(label="Total ML Engines", value=f"{len([m for m in MODULE_REGISTRY if m['id'] != 'overview'])} Modules", help="Independent machine learning systems")
+        st.metric(
+            label="Total ML Engines",
+            value=f"{len([m for m in MODULE_REGISTRY if m['id'] != 'overview'])} Modules",
+            help="Target machine learning modules",
+        )
     with kpi2:
-        st.metric(label="Active Production Engines", value=f"{sum(1 for m in MODULE_REGISTRY if m.get('status') == 'Production Ready')} Modules", help="Production ready modules")
+        st.metric(
+            label="Active Production Engines",
+            value=f"{sum(1 for m in MODULE_REGISTRY if m.get('status') == 'Production Ready')} Modules",
+            help="Production ready modules",
+        )
     with kpi3:
-        st.metric(label="Team Contributors", value="12 Leads", help="Strictly isolated development sandboxes")
+        st.metric(
+            label="Team Contributors",
+            value="8 Student Leads",
+            help="Strictly isolated development sandboxes across 7 target modules",
+        )
     with kpi4:
-        st.metric(label="Quality Assurance", value="31 Tests Passed", help="Automated pytest suite & GitHub Actions CI")
+        st.metric(
+            label="Quality Assurance",
+            value="47 Tests Passed",
+            help="Automated pytest suite & GitHub Actions CI",
+        )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
     # Section Header
-    st.markdown(
+    safe_html(
         """
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.25rem;">
             <div>
@@ -316,8 +285,7 @@ def render_platform_overview() -> None:
                 </p>
             </div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
     # Interactive 3-Column Flashcard Grid
@@ -330,7 +298,7 @@ def render_platform_overview() -> None:
         badge_border = f"{mod['badge_color']}40"
 
         with col:
-            # HTML Card visual
+            # HTML Card visual via safe_html
             safe_html(
                 f"""
                 <div class="flashcard-box">
@@ -366,7 +334,7 @@ def render_platform_overview() -> None:
                 st.session_state["current_module_id"] = mod["id"]
                 st.rerun()
 
-            st.markdown("<div style='margin-bottom: 1.5rem;'></div>", unsafe_allow_html=True)
+            safe_html("<div style='margin-bottom: 1.5rem;'></div>")
 
     st.markdown("---")
 
@@ -382,7 +350,7 @@ def render_platform_overview() -> None:
                     🔒 Strict Module Isolation
                 </h4>
                 <p style="color: #64748b; font-size: 0.88rem; line-height: 1.5; margin-bottom: 0;">
-                    Each team member owns their dedicated directory under <code>modules/</code>.
+                    Each student team member owns their dedicated directory under <code>modules/</code>.
                     No member alters another member's pipeline, eliminating merge conflicts completely.
                 </p>
             </div>
@@ -397,7 +365,7 @@ def render_platform_overview() -> None:
                     ⚡ Dynamic Contract Loading
                 </h4>
                 <p style="color: #64748b; font-size: 0.88rem; line-height: 1.5; margin-bottom: 0;">
-                    All 12 modules adhere to the <code>render()</code> interface contract.
+                    All 7 modules adhere to the <code>render()</code> interface contract.
                     Heavy ML models are loaded lazily on demand, ensuring near-instant sub-second startup.
                 </p>
             </div>

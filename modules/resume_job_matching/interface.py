@@ -21,7 +21,7 @@ def render() -> None:
 
     render_module_header(
         title="Resume–Job Matching Engine",
-        member="Member 1 (Lead Architect)",
+        member="24B11AI304 (Lead Architect)",
         description=(
             "Hybrid talent intelligence engine analyzing multi-format resume documents (PDF, DOCX, TXT), "
             "domain skills taxonomy coverage across 6 technical categories with synonym normalization, "

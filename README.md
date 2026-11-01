@@ -6,33 +6,29 @@
 [![UI Framework](https://img.shields.io/badge/UI-Streamlit-FF4B4B.svg)](https://streamlit.io/)
 [![ML Library](https://img.shields.io/badge/ML-Scikit--Learn-F7931E.svg)](https://scikit-learn.org/)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF.svg)](https://github.com/WHENKEY2007/TalentBridge/actions)
-[![Test Suite](https://img.shields.io/badge/Tests-36%20Passing-brightgreen.svg)](https://pytest.org/)
+[![Test Suite](https://img.shields.io/badge/Tests-47%20Passing-brightgreen.svg)](https://pytest.org/)
 
 ---
 
 ## 1. Project Overview & Mission
 
-**TalentBridge AI** integrates 12 distinct machine learning applications across the talent acquisition, student career development, and workforce retention lifecycles. 
+**TalentBridge AI** integrates 7 distinct machine learning applications across the talent acquisition, student academic development, and workforce retention lifecycles. 
 
-The platform is designed around **strict modular architecture** allowing 12 developers to build, train, evaluate, and test their machine learning models independently in isolation, without blocking each other or causing git merge conflicts.
+The platform is designed around **strict modular architecture** allowing 8 student developers to build, train, evaluate, and test their machine learning models independently in isolation, without blocking each other or causing git merge conflicts.
 
 ---
 
 ## 2. Team Member Assignments & Use Case Matrix
 
-| # | Module Directory | Use Case Name | Assigned Lead | Current Status |
-|---|------------------|---------------|---------------|----------------|
-| 1 | `modules/resume_job_matching/` | **Resume–Job Matching** | **Member 1 (24B11AI304)** | ✅ **Production Hybrid Engine (Completed & Verified)** |
-| 2 | `modules/fake_job_detection/` | **Fake Job & Internship Posting Detection** | **24B11AI134 & 24P31A42D0** | ✅ **Production Threat Scanner & NLP Classifier** |
-| 3 | `modules/student_performance/` | **Student Performance Prediction** | **Member 3 (24B11AI070)** | ✅ **Production Dual-Pipeline Engine** |
-| 4 | `modules/entrance_exam_prediction/` | Entrance Examination Performance Prediction | Member 4 (24P31A4255) | 🚧 In Development (Scaffold Ready) |
-| 5 | `modules/placement_risk/` | Student Placement Risk Prediction | Member 5 | 🚧 In Development (Scaffold Ready) |
-| 6 | `modules/interview_analyzer/` | AI Interview Performance Analysis & Feedback | Member 6 | 🚧 In Development (Scaffold Ready) |
-| 7 | `modules/learning_difficulty/` | Personalized Learning Difficulty Detection | Member 7 | 🚧 In Development (Scaffold Ready) |
-| 8 | `modules/fairness_recruitment/` | Fairness-Aware Recruitment | Member 8 (24B11AI159) | 🚧 In Development (Scaffold Ready) |
-| 9 | `modules/employee_attrition/` | Employee Attrition Prediction | Member 9 (24B11AI446) | 🚧 In Development (Scaffold Ready) |
-| 10 | `modules/resume_analyzer/` | **AI Resume Analysis** | **Member 10 (24B11AI109)** | ✅ **Production Ready (PR #1 Merged)** |
-| 11 | `modules/personalized_learning/` | Personalized Learning Recommendations | Member 12 | 🚧 In Development (Scaffold Ready) |
+| # | Module Directory | Use Case Name | Assigned Student Lead | Current Status | Notes |
+|---|------------------|---------------|-----------------------|----------------|-------|
+| 1 | `modules/resume_job_matching/` | **Resume–Job Matching** | **24B11AI304 (Lead)** | ✅ **Production Ready** | Production TF-IDF + Taxonomy matcher, 17 unit tests passing |
+| 2 | `modules/fake_job_detection/` | **Fake Job & Internship Posting Detection** | **24B11AI134 & 24P31A42D0** | ✅ **Production Ready** | Single unified module covering job & internship fraud |
+| 3 | `modules/student_performance/` | **Student Performance Prediction** | **24B11AI070** | ✅ **Production Ready** | Production dual-pipeline (GPA regressor + risk classifier), 7 unit tests passing |
+| 4 | `modules/entrance_exam_prediction/` | Student Performance on Entrance Examination | 24P31A4255 | 🚧 In Development | Scaffold in platform |
+| 5 | `modules/fairness_recruitment/` | Fairness-Aware AI Recruitment | 24B11AI159 | 🚧 In Development | Scaffold only (Algorithmic bias auditor) |
+| 6 | `modules/employee_attrition/` | Employee Attrition Prediction | 24B11AI446 | 🚧 In Development | Scaffold only (Workplace retention forecasting) |
+| 7 | `modules/resume_analyzer/` | **AI Resume Analyzer** | **24B11AI109** | ✅ **Production Ready** | Production GradientBoosting scorer + ATS audit, 13 unit tests passing |
 
 ---
 
@@ -40,7 +36,7 @@ The platform is designed around **strict modular architecture** allowing 12 deve
 
 The user interface uses a modern **card-based portal architecture** designed for high clarity and zero clutter:
 - **No Left Sidebar Clutter:** The default Streamlit sidebar is completely collapsed and hidden, dedicating 100% of the screen width to the active dashboard or module.
-- **Interactive Flashcards:** The home page features a clean 3-column grid displaying all 11 modules with category tags, status badges, descriptions, and 1-click launch buttons.
+- **Interactive Flashcards:** The home page features a clean 3-column grid displaying all 7 modules with category tags, status badges, descriptions, and 1-click launch buttons.
 - **Breadcrumb Navigation:** Inside any active module, a top-level `← Back to Dashboard` navigation bar enables seamless return to the portal.
 
 ---
@@ -61,40 +57,44 @@ TalentBridge-AI/
 │       └── ci.yml             # Automated CI workflow running pytest on PRs
 ├── modules/
 │   ├── __init__.py            # Root modules package
-│   ├── resume_job_matching/   # [MEMBER 1] Production Hybrid Matching Engine
-│   │   ├── __init__.py        # Exports interface and matcher
-│   │   ├── interface.py       # Streamlit UI with file upload, simulator, and reports
-│   │   ├── model.py           # Hybrid NLP & Taxonomy matching engine
-│   │   ├── preprocessing.py   # Multi-format parsing, alias normalization, ATS audit
-│   │   ├── train.py           # Multi-domain vectorizer training
-│   │   ├── config.py          # Curated taxonomies, aliases, presets, thresholds
-│   │   ├── README.md          # Member 1 technical specifications
-│   │   ├── data/              # Datasets folder (git-tracked via .gitkeep)
-│   │   ├── artifacts/
-│   │   │   └── tfidf_vectorizer.joblib  # Serialized 6,000-feature vectorizer
+│   ├── resume_job_matching/   # [24B11AI304] Production Hybrid Matching Engine
+│   │   ├── __init__.py, interface.py, model.py, preprocessing.py, train.py, config.py, README.md
+│   │   ├── artifacts/tfidf_vectorizer.joblib
+│   │   └── tests/test_resume_job_matching.py # 17 unit tests
+│   │
+│   ├── fake_job_detection/    # [24B11AI134 & 24P31A42D0] Production Fraud Scanner (Unified)
+│   │   ├── __init__.py, interface.py, model.py, analyzer.py, README.md
+│   │   ├── data/fake_job_postings.csv
+│   │   ├── artifacts/fake_job_model.joblib
+│   │   └── tests/test_fake_job_detection.py # 4 unit tests
+│   │
+│   ├── student_performance/   # [24B11AI070] Production Dual-Pipeline Engine
+│   │   ├── __init__.py, interface.py, model.py, config.py, README.md
+│   │   ├── artifacts/student_performance_model.joblib
+│   │   └── tests/test_student_performance.py # 7 unit tests
+│   │
+│   ├── entrance_exam_prediction/ # [24P31A4255] In Development
+│   │   ├── __init__.py, interface.py, model.py, README.md
 │   │   └── tests/
-│   │       └── test_resume_job_matching.py # 17 unit tests
 │   │
-│   ├── resume_analyzer/       # [MEMBER 10] Production Resume Analyzer
-│   │   ├── __init__.py, interface.py, model.py, preprocessing.py, config.py
-│   │   ├── artifacts/resume_analyzer_model.joblib
-│   │   └── tests/test_resume_analyzer.py # 13 unit tests
+│   ├── fairness_recruitment/  # [24B11AI159] In Development
+│   │   ├── __init__.py, interface.py, model.py, README.md
+│   │   └── tests/
 │   │
-│   ├── fake_job_detection/          # [MEMBER 2]  (Scaffold Ready)
-│   ├── student_performance/         # [MEMBER 3]  (Scaffold Ready)
-│   ├── entrance_exam_prediction/    # [MEMBER 4]  (Scaffold Ready)
-│   ├── placement_risk/              # [MEMBER 5]  (Scaffold Ready)
-│   ├── interview_analyzer/          # [MEMBER 6]  (Scaffold Ready)
-│   ├── learning_difficulty/         # [MEMBER 7]  (Scaffold Ready)
-│   ├── fairness_recruitment/        # [MEMBER 8]  (Scaffold Ready)
-│   ├── employee_attrition/          # [MEMBER 9]  (Scaffold Ready)
-│   └── personalized_learning/       # [MEMBER 12] (Scaffold Ready)
+│   ├── employee_attrition/    # [24B11AI446] In Development
+│   │   ├── __init__.py, interface.py, model.py, README.md
+│   │   └── tests/
+│   │
+│   └── resume_analyzer/       # [24B11AI109] Production Resume Analyzer
+│       ├── __init__.py, interface.py, model.py, preprocessing.py, config.py, train.py, README.md
+│       ├── artifacts/resume_analyzer_model.joblib
+│       └── tests/test_resume_analyzer.py # 13 unit tests
 │
 ├── shared/
 │   ├── __init__.py            # Shared utility exports
-│   └── utils.py               # Design tokens, headers, disclaimers, extension filters
+│   └── utils.py               # Design tokens, headers, disclaimers, safe_html helper
 ├── tests/
-│   └── test_module_integration.py # 6 platform integration tests
+│   └── test_module_integration.py # Platform architecture & contract verification
 └── data/
     └── .gitkeep               # Root shared data directory (optional)
 ```
@@ -141,21 +141,9 @@ Open your browser at `http://localhost:8501`.
 
 ## 6. Running the Test Suite
 
-Run all unit and integration tests across the platform (currently **36 passing tests**):
+Run all unit and integration tests across the platform (currently **47 passing tests**):
 ```bash
-python -m pytest -v
-```
-
-To run tests for a specific module:
-```bash
-# Member 1: Resume–Job Matching
-python -m pytest modules/resume_job_matching/tests/ -v
-
-# Member 10: Resume Analyzer
-python -m pytest modules/resume_analyzer/tests/ -v
-
-# Platform Architecture & Contract Verification
-python -m pytest tests/test_module_integration.py -v
+python -m pytest tests modules/resume_job_matching/tests modules/resume_analyzer/tests modules/fake_job_detection/tests modules/student_performance/tests -v
 ```
 
 ---

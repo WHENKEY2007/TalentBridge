@@ -1,7 +1,7 @@
 """
 TalentBridge AI - AI Resume Analysis Interactive Interface.
 Exposes the required render() contract for TalentBridge AI.
-Assigned Lead: Member 10
+Assigned Lead: 24B11AI109
 """
 
 from typing import Dict, Optional
@@ -31,7 +31,7 @@ def render() -> None:
     # 1. Module Header
     render_module_header(
         title="AI Resume Analysis & ATS Readiness",
-        member="Member 10",
+        member="24B11AI109",
         description="Deep multi-dimensional resume parsing, structure scoring, action-verb density, and ATS readiness diagnostics.",
         badge="Active ML Model",
         badge_color="#38bdf8",
