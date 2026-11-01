@@ -99,9 +99,9 @@ MODULE_REGISTRY: List[Dict[str, Any]] = [
         "category": "Ethical AI",
         "icon": "⚖️",
         "module_path": "modules.fairness_recruitment.interface",
-        "status": "In Development",
-        "badge_color": "#f59e0b",
-        "description": "Algorithmic bias auditor evaluating disparate impact ratios and demographic parity.",
+        "status": "Production Ready",
+        "badge_color": "#10b981",
+        "description": "Counterfactual bias auditor testing gender, college, age and career gap, with fair re-ranking and explained decisions.",
     },
     {
         "id": "employee_attrition",
