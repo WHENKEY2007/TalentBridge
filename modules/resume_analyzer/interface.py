@@ -16,6 +16,8 @@ from .config import (
 from .model import ResumeAnalyzer
 from .preprocessing import parse_document
 
+RESUMEFITLENS_URL = "https://resumefitlens.vercel.app"
+
 
 @st.cache_resource
 def get_analyzer_instance() -> ResumeAnalyzer:
@@ -35,6 +37,14 @@ def render() -> None:
         description="Deep multi-dimensional resume parsing, structure scoring, action-verb density, and ATS readiness diagnostics.",
         badge="Active ML Model",
         badge_color="#38bdf8",
+    )
+
+    # External full web app
+    st.link_button(
+        "🌐 Open ResumeFitLens Web App →",
+        RESUMEFITLENS_URL,
+        type="primary",
+        use_container_width=True,
     )
 
     analyzer = get_analyzer_instance()
