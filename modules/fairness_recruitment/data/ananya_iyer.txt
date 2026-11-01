@@ -1,0 +1,9 @@
+Ananya Iyer
+ananya.i@example.com | Age: 29
+EDUCATION
+B.Tech, Regional Engineering College, 2016 - 2020
+EXPERIENCE
+Data Scientist, Mu Sigma, Jul 2020 - Mar 2022
+ML Engineer, Fractal, Jan 2025 - Present
+SKILLS
+Python, Machine Learning, SQL, Deep Learning, PyTorch
