@@ -1,34 +1,15 @@
-"""
-TalentBridge AI - Fairness-Aware AI Recruitment Interface
-Exposes the required render() contract for TalentBridge AI.
-Assigned Lead: 24B11AI159
-"""
 
-from shared.utils import render_placeholder
+from pathlib import Path
+import runpy
+import sys
 
 
 def render() -> None:
-    """
-    Entry point for Fairness-Aware AI Recruitment UI.
-    Renders module information and guides 24B11AI159 on implementation.
-    """
-    render_placeholder(
-        module_key="fairness_recruitment",
-        module_title="Fairness-Aware AI Recruitment",
-        member_name="24B11AI159",
-        expected_inputs=[
-            "Recruitment decisions / candidate selection labels",
-            "Protected attribute annotations (Gender, Ethnicity, Age group)",
-            "Candidate qualification features and test scores",
-        ],
-        expected_outputs=[
-            "Disparate Impact Ratio (4/5th Rule Compliance)",
-            "Statistical Parity Difference & Equal Opportunity Difference",
-            "Bias Mitigation / Re-weighting recommendations (AIF360 / Fairlearn)",
-        ],
-        suggested_models=[
-            "Fairlearn Adversarial Debiasing",
-            "Reweighting Preprocessing",
-            "Equalized Odds Post-processing",
-        ],
-    )
+    module_dir = Path(__file__).resolve().parent
+    module_path = str(module_dir)
+
+    if module_path not in sys.path:
+        sys.path.insert(0, module_path)
+
+    ui_path = module_dir / "fairhire_ui.py"
+    runpy.run_path(str(ui_path), run_name="__main__")
